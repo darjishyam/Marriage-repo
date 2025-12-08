@@ -1,9 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function PurchasePremiumScreen() {
   const router = useRouter();
+  const { t } = useLanguage();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -15,7 +17,7 @@ export default function PurchasePremiumScreen() {
         >
           <Ionicons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
-        <Text style={styles.navTitle}>Purchase Premium</Text>
+        <Text style={styles.navTitle}>{t("purchase_premium")}</Text>
         <View style={styles.placeholder} />
       </View>
 
@@ -24,54 +26,52 @@ export default function PurchasePremiumScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Premium Icon */}
-        <View style={styles.iconContainer}>
-          <Ionicons name="diamond" size={80} color="#FFD700" />
+        {/* Premium Card */}
+        <View style={styles.premiumCard}>
+          {/* Title with Crown */}
+          <View style={styles.titleContainer}>
+            <Ionicons name="diamond" size={28} color="#FFD700" />
+            <Text style={styles.cardTitle}>Shagun</Text>
+          </View>
+
+          {/* Features List */}
+          <View style={styles.featuresContainer}>
+            <View style={styles.featureItem}>
+              <Ionicons name="checkmark-circle" size={24} color="#000" />
+              <Text style={styles.featureText}>{t("ads_free")}</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Ionicons name="checkmark-circle" size={24} color="#000" />
+              <Text style={styles.featureText}>{t("export_shagun_pdf")}</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Ionicons name="checkmark-circle" size={24} color="#000" />
+              <Text style={styles.featureText}>{t("export_guest_pdf")}</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Ionicons name="checkmark-circle" size={24} color="#000" />
+              <Text style={styles.featureText}>{t("export_expense_pdf")}</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Ionicons name="checkmark-circle" size={24} color="#000" />
+              <Text style={styles.featureText}>{t("support")}</Text>
+            </View>
+          </View>
+
+          {/* Pricing */}
+          <View style={styles.pricingContainer}>
+            <Text style={styles.price}>₹120 /{t("per_month")}</Text>
+            <View style={styles.saveTag}>
+              <Text style={styles.saveTagText}>Save 25%</Text>
+            </View>
+          </View>
+
+          {/* Purchase Button */}
+          <TouchableOpacity style={styles.purchaseButton}>
+            <Ionicons name="logo-apple" size={20} color="#FFF" style={styles.appleIcon} />
+            <Text style={styles.purchaseButtonText}>{t("pay_apple")}</Text>
+          </TouchableOpacity>
         </View>
-
-        {/* Title */}
-        <Text style={styles.title}>Upgrade to Premium</Text>
-
-        {/* Description */}
-        <Text style={styles.description}>
-          Unlock all premium features and enjoy an ad-free experience with PDF export capabilities.
-        </Text>
-
-        {/* Features List */}
-        <View style={styles.featuresContainer}>
-          <View style={styles.featureItem}>
-            <Ionicons name="checkmark-circle" size={24} color="#000" />
-            <Text style={styles.featureText}>Export data to PDF without ads</Text>
-          </View>
-          <View style={styles.featureItem}>
-            <Ionicons name="checkmark-circle" size={24} color="#000" />
-            <Text style={styles.featureText}>Unlimited entries</Text>
-          </View>
-          <View style={styles.featureItem}>
-            <Ionicons name="checkmark-circle" size={24} color="#000" />
-            <Text style={styles.featureText}>Priority support</Text>
-          </View>
-          <View style={styles.featureItem}>
-            <Ionicons name="checkmark-circle" size={24} color="#000" />
-            <Text style={styles.featureText}>Advanced analytics</Text>
-          </View>
-        </View>
-
-        {/* Pricing */}
-        <View style={styles.pricingContainer}>
-          <Text style={styles.price}>₹ 299</Text>
-          <Text style={styles.pricePeriod}>per month</Text>
-        </View>
-
-        {/* Purchase Button */}
-        <TouchableOpacity style={styles.purchaseButton}>
-          <Text style={styles.purchaseButtonText}>Purchase Premium</Text>
-        </TouchableOpacity>
-
-        {/* Terms */}
-        <Text style={styles.terms}>
-          By purchasing, you agree to our Terms of Service and Privacy Policy. Subscription will auto-renew unless cancelled.
-        </Text>
       </ScrollView>
     </SafeAreaView>
   );
@@ -112,26 +112,29 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     paddingBottom: 40,
   },
-  iconContainer: {
+  premiumCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 24,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  titleContainer: {
+    flexDirection: "row",
     alignItems: "center",
-    marginBottom: 32,
+    marginBottom: 24,
+    gap: 8,
   },
-  title: {
-    fontSize: 28,
+  cardTitle: {
+    fontSize: 24,
     fontWeight: "700",
-    color: "#000",
-    textAlign: "center",
-    marginBottom: 16,
-  },
-  description: {
-    fontSize: 16,
-    color: "#666",
-    textAlign: "center",
-    marginBottom: 32,
-    lineHeight: 24,
+    color: "#8A0030",
   },
   featuresContainer: {
-    marginBottom: 32,
+    marginBottom: 24,
   },
   featureItem: {
     flexDirection: "row",
@@ -144,18 +147,27 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   pricingContainer: {
+    flexDirection: "row",
     alignItems: "center",
-    marginBottom: 32,
+    justifyContent: "center",
+    marginBottom: 24,
+    gap: 12,
   },
   price: {
-    fontSize: 48,
+    fontSize: 24,
     fontWeight: "700",
     color: "#000",
   },
-  pricePeriod: {
-    fontSize: 16,
-    color: "#666",
-    marginTop: 4,
+  saveTag: {
+    backgroundColor: "#FFD700",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  saveTagText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#000",
   },
   purchaseButton: {
     backgroundColor: "#000",
@@ -163,18 +175,16 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 24,
+    flexDirection: "row",
+    marginBottom: 16,
+  },
+  appleIcon: {
+    marginRight: 8,
   },
   purchaseButtonText: {
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "600",
-  },
-  terms: {
-    fontSize: 12,
-    color: "#999",
-    textAlign: "center",
-    lineHeight: 18,
   },
 });
 

@@ -1,15 +1,17 @@
 import { Stack } from "expo-router";
 import { WeddingProvider } from "@/contexts/WeddingContext";
 import { ShagunProvider } from "@/contexts/ShagunContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 
 export default function RootLayout() {
   return (
     <WeddingProvider>
       <ShagunProvider>
-        <Stack 
-          screenOptions={{ headerShown: false }}
-          initialRouteName="(tabs)"
-        >
+        <LanguageProvider>
+          <Stack 
+            screenOptions={{ headerShown: false }}
+            initialRouteName="(tabs)"
+          >
         {/* Temporarily disabled onboarding for testing */}
         {/* <Stack.Screen name="onboarding" /> */}
         <Stack.Screen name="login" />
@@ -28,6 +30,7 @@ export default function RootLayout() {
         {/* Tabs - Home page */}
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
+        </LanguageProvider>
       </ShagunProvider>
     </WeddingProvider>
   );

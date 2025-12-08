@@ -1,3 +1,4 @@
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -5,14 +6,14 @@ import { Image, Modal, Platform, SafeAreaView, ScrollView, StyleSheet, Text, Tou
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const { language, setLanguage, t } = useLanguage();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState("English");
 
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Hi Moon! 👋</Text>
+        <Text style={styles.headerTitle}>{t("hi_moon")} 👋</Text>
       </View>
 
       <ScrollView 
@@ -31,7 +32,7 @@ export default function ProfileScreen() {
             <Text style={styles.profileEmail}>moon@gmail.com</Text>
           </View>
           <TouchableOpacity style={styles.editButton}>
-            <Text style={styles.editButtonText}>Edit</Text>
+            <Text style={styles.editButtonText}>{t("edit")}</Text>
           </TouchableOpacity>
         </View>
 
@@ -43,10 +44,10 @@ export default function ProfileScreen() {
             onPress={() => router.push("/purchase-premium")}
           >
             <View style={styles.menuItemLeft}>
-              <Ionicons name="diamond-outline" size={22} color="#000" />
+              <Ionicons name="diamond-outline" size={22} color="#FFD700" />
               <View style={styles.menuItemTextContainer}>
-                <Text style={styles.menuItemText}>Purchase Premium</Text>
-                <Text style={styles.menuItemSubtext}>Export data to PDF without ads</Text>
+                <Text style={styles.menuItemText}>{t("purchase_premium")}</Text>
+                <Text style={styles.menuItemSubtext}>{t("export_data_pdf")}</Text>
               </View>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#999" />
@@ -59,10 +60,10 @@ export default function ProfileScreen() {
           >
             <View style={styles.menuItemLeft}>
               <Ionicons name="globe-outline" size={22} color="#000" />
-              <Text style={styles.menuItemText}>Change Language</Text>
+              <Text style={styles.menuItemText}>{t("change_language")}</Text>
             </View>
             <View style={styles.menuItemRight}>
-              <Text style={styles.changeButtonText}>Change</Text>
+              <Text style={styles.changeButtonText}>{t("change")}</Text>
               <Ionicons name="chevron-forward" size={20} color="#999" />
             </View>
           </TouchableOpacity>
@@ -74,7 +75,7 @@ export default function ProfileScreen() {
           >
             <View style={styles.menuItemLeft}>
               <Ionicons name="document-text-outline" size={22} color="#000" />
-              <Text style={styles.menuItemText}>Terms of Service</Text>
+              <Text style={styles.menuItemText}>{t("terms_of_service")}</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
@@ -86,7 +87,7 @@ export default function ProfileScreen() {
           >
             <View style={styles.menuItemLeft}>
               <Ionicons name="trash-outline" size={22} color="#000" />
-              <Text style={styles.menuItemText}>Delete Account</Text>
+              <Text style={styles.menuItemText}>{t("delete_account")}</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
@@ -95,7 +96,7 @@ export default function ProfileScreen() {
           <TouchableOpacity style={styles.menuItem}>
             <View style={styles.menuItemLeft}>
               <Ionicons name="mail-outline" size={22} color="#000" />
-              <Text style={styles.menuItemText}>Contact Us</Text>
+              <Text style={styles.menuItemText}>{t("contact_us")}</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
@@ -104,16 +105,16 @@ export default function ProfileScreen() {
           <TouchableOpacity style={styles.menuItem}>
             <View style={styles.menuItemLeft}>
               <Ionicons name="logo-instagram" size={22} color="#E4405F" />
-              <Text style={styles.menuItemText}>Connect on Instagram</Text>
+              <Text style={styles.menuItemText}>{t("connect_instagram")}</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
 
           {/* Log out */}
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={[styles.menuItem, styles.lastMenuItem]}>
             <View style={styles.menuItemLeft}>
               <Ionicons name="log-out-outline" size={22} color="#000" />
-              <Text style={styles.menuItemText}>Log out</Text>
+              <Text style={styles.menuItemText}>{t("log_out")}</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
@@ -136,7 +137,7 @@ export default function ProfileScreen() {
           <View style={styles.modalContent}>
             {/* Modal Header */}
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Change Language</Text>
+              <Text style={styles.modalTitle}>{t("change_language")}</Text>
               <TouchableOpacity onPress={() => setShowLanguageModal(false)}>
                 <Ionicons name="close" size={24} color="#000" />
               </TouchableOpacity>
@@ -146,22 +147,22 @@ export default function ProfileScreen() {
             <View style={styles.languageOptions}>
               <TouchableOpacity 
                 style={styles.languageOption}
-                onPress={() => setSelectedLanguage("English")}
+                onPress={() => setLanguage("English")}
               >
                 <View style={styles.radioButton}>
-                  {selectedLanguage === "English" && <View style={styles.radioButtonSelected} />}
+                  {language === "English" && <View style={styles.radioButtonSelected} />}
                 </View>
                 <Text style={styles.languageOptionText}>English</Text>
               </TouchableOpacity>
 
               <TouchableOpacity 
                 style={styles.languageOption}
-                onPress={() => setSelectedLanguage("Gujrati")}
+                onPress={() => setLanguage("Gujrati")}
               >
                 <View style={styles.radioButton}>
-                  {selectedLanguage === "Gujrati" && <View style={styles.radioButtonSelected} />}
+                  {language === "Gujrati" && <View style={styles.radioButtonSelected} />}
                 </View>
-                <Text style={styles.languageOptionText}>Gujrati</Text>
+                <Text style={styles.languageOptionText}>ગુજરાતી</Text>
               </TouchableOpacity>
             </View>
 
@@ -171,13 +172,13 @@ export default function ProfileScreen() {
                 style={styles.cancelButton}
                 onPress={() => setShowLanguageModal(false)}
               >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
+                <Text style={styles.cancelButtonText}>{t("cancel")}</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={styles.saveButton}
                 onPress={() => setShowLanguageModal(false)}
               >
-                <Text style={styles.saveButtonText}>Save</Text>
+                <Text style={styles.saveButtonText}>{t("save")}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -207,7 +208,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 20,
+    paddingBottom: Platform.OS === "ios" ? 20 : 16,
+    flexGrow: 1,
   },
   profileCard: {
     flexDirection: "row",
@@ -216,7 +218,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     marginHorizontal: 20,
-    marginBottom: 24,
+    marginBottom: 20,
     borderWidth: 1,
     borderColor: "#E6E6E6",
     shadowColor: "#000",
@@ -260,7 +262,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 16,
+    paddingVertical: 30,
     borderBottomWidth: 1,
     borderBottomColor: "#F0F0F0",
   },
@@ -270,13 +272,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   menuItemTextContainer: {
-    marginLeft: 16,
+    marginLeft: 12,
     flex: 1,
   },
   menuItemText: {
     fontSize: 16,
     fontWeight: "500",
     color: "#000",
+    marginLeft: 0,
   },
   menuItemSubtext: {
     fontSize: 12,
@@ -292,6 +295,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     color: "#FF0000",
+  },
+  lastMenuItem: {
+    borderBottomWidth: 0,
   },
   modalOverlay: {
     flex: 1,
