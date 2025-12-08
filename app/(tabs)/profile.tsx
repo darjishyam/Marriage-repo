@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 30,
+    paddingVertical: 24,
     borderBottomWidth: 1,
     borderBottomColor: "#F0F0F0",
   },
