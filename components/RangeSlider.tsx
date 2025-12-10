@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import { View, StyleSheet, PanResponder, Dimensions, Text } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Dimensions, PanResponder, Platform, StyleSheet, Text, View } from "react-native";
 
 interface RangeSliderProps {
   min: number;
@@ -145,11 +145,20 @@ const styles = StyleSheet.create({
     top: (40 - HANDLE_SIZE) / 2,
     borderWidth: 3,
     borderColor: "#FFF",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+      web: {
+        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+      },
+    }),
   },
   lowHandle: {},
   highHandle: {},

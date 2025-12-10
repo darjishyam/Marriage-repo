@@ -2,6 +2,7 @@ import { useWedding } from "@/contexts/WeddingContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Dimensions, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -55,7 +56,7 @@ function WeddingDashboard({ weddingData }: { weddingData: { groomName: string; b
   };
 
   return (
-    <View style={styles.dashboardContainer}>
+    <SafeAreaView style={styles.dashboardContainer}>
       {/* Header Area */}
       <View style={styles.headerArea}>
         <Text style={styles.headerTitle}>Shagun</Text>
@@ -172,7 +173,7 @@ function WeddingDashboard({ weddingData }: { weddingData: { groomName: string; b
           </View>
         </TouchableOpacity>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -228,7 +229,7 @@ const styles = StyleSheet.create({
   },
   headerArea: {
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === "ios" ? 60 : 40,
+    paddingTop: 20,
     paddingBottom: 20,
   },
   headerTitle: {

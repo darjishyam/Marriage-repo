@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { Platform, Image as RNImage, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image as RNImage, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function PurchasePremiumScreen() {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function PurchasePremiumScreen() {
         <View style={styles.placeholder} />
       </View>
 
-      <View style={styles.content}>
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Premium Card */}
         <View style={styles.card}>
           {/* Header */}
@@ -89,7 +90,7 @@ export default function PurchasePremiumScreen() {
             <Text style={styles.payButtonText}>Pay with Apple</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -104,7 +105,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === "ios" ? 8 : 16,
+    paddingTop: 16,
     paddingBottom: 12,
   },
   backButton: {
@@ -119,10 +120,11 @@ const styles = StyleSheet.create({
   placeholder: {
     width: 40,
   },
-  content: {
-    flex: 1,
+  scrollContent: {
+    flexGrow: 1,
     paddingHorizontal: 20,
     paddingTop: 24,
+    paddingBottom: 40,
   },
   card: {
     backgroundColor: "#FAFAFA",

@@ -3,7 +3,8 @@ import { useShagun } from "@/contexts/ShagunContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
-import { Modal, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function MyChandlaScreen() {
   const router = useRouter();
@@ -230,7 +231,7 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === "ios" ? 50 : 40,
+    paddingTop: 20,
     paddingBottom: 16,
   },
   headerTitle: {
@@ -300,11 +301,20 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 20,
     // Soft shadow
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 2,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.05,
+        shadowRadius: 10,
+      },
+      android: {
+        elevation: 2,
+      },
+      web: {
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.05)",
+      },
+    }),
   },
   cardHeader: {
     flexDirection: "row",

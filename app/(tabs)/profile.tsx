@@ -2,7 +2,8 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Image, Modal, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, Modal, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -210,11 +211,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
-    paddingBottom: Platform.OS === "ios" ? 88 : 64,
+    paddingBottom: 110,
   },
   header: {
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === "ios" ? 50 : 40,
+    paddingTop: 20,
     paddingBottom: 24,
   },
   headerTitle: {

@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { Platform, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ShagunBookScreen() {
   const router = useRouter();
@@ -19,41 +20,44 @@ export default function ShagunBookScreen() {
         <View style={styles.placeholder} />
       </View>
 
-      {/* Empty State Content */}
-      <View style={styles.emptyContent}>
-        {/* Book Icon with Decorative Elements */}
-        <View style={styles.iconContainer}>
-          {/* Decorative dots */}
-          <View style={[styles.decorativeDot, { top: 30, left: 50 }]} />
-          <View style={[styles.decorativeDot, { top: 70, right: 60 }]} />
-          <View style={[styles.decorativeDot, { bottom: 50, left: 40 }]} />
-          <View style={[styles.decorativeDot, { bottom: 70, right: 50 }]} />
-          <View style={[styles.decorativeDot, { top: 50, left: 20 }]} />
-          <View style={[styles.decorativeDot, { top: 90, right: 30 }]} />
+      {/* Content - Wrapped in ScrollView to ensure availability on small screens even if empty */}
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Empty State Content */}
+        <View style={styles.emptyContent}>
+          {/* Book Icon with Decorative Elements */}
+          <View style={styles.iconContainer}>
+            {/* Decorative dots */}
+            <View style={[styles.decorativeDot, { top: 30, left: 50 }]} />
+            <View style={[styles.decorativeDot, { top: 70, right: 60 }]} />
+            <View style={[styles.decorativeDot, { bottom: 50, left: 40 }]} />
+            <View style={[styles.decorativeDot, { bottom: 70, right: 50 }]} />
+            <View style={[styles.decorativeDot, { top: 50, left: 20 }]} />
+            <View style={[styles.decorativeDot, { top: 90, right: 30 }]} />
 
-          {/* Decorative circles */}
-          <View style={[styles.decorativeCircle, { top: 40, right: 40 }]} />
-          <View style={[styles.decorativeCircle, { bottom: 60, left: 60 }]} />
-          <View style={[styles.decorativeCircle, { top: 20, right: 20 }]} />
+            {/* Decorative circles */}
+            <View style={[styles.decorativeCircle, { top: 40, right: 40 }]} />
+            <View style={[styles.decorativeCircle, { bottom: 60, left: 60 }]} />
+            <View style={[styles.decorativeCircle, { top: 20, right: 20 }]} />
 
-          {/* Book icon */}
-          <Ionicons name="book-outline" size={140} color="#E0E0E0" />
+            {/* Book icon */}
+            <Ionicons name="book-outline" size={140} color="#E0E0E0" />
+          </View>
+
+          {/* Primary Text */}
+          <Text style={styles.primaryText}>No Shagun Added</Text>
+
+          {/* Secondary Text */}
+          <Text style={styles.secondaryText}>Save your wedding chandla forever</Text>
+
+          {/* Add Shagun Button */}
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => router.push("/add-shagun")}
+          >
+            <Text style={styles.addButtonText}>Add Shagun</Text>
+          </TouchableOpacity>
         </View>
-
-        {/* Primary Text */}
-        <Text style={styles.primaryText}>No Shagun Added</Text>
-
-        {/* Secondary Text */}
-        <Text style={styles.secondaryText}>Save your wedding chandla forever</Text>
-
-        {/* Add Shagun Button */}
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => router.push("/add-shagun")}
-        >
-          <Text style={styles.addButtonText}>Add Shagun</Text>
-        </TouchableOpacity>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -68,7 +72,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === "ios" ? 8 : 16,
+    paddingTop: 16,
     paddingBottom: 12,
     borderBottomWidth: 0,
   },
@@ -84,12 +88,15 @@ const styles = StyleSheet.create({
   placeholder: {
     width: 40,
   },
+  scrollContent: {
+    flexGrow: 1,
+  },
   emptyContent: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingBottom: Platform.OS === "ios" ? 88 : 64,
+    paddingBottom: 64,
   },
   iconContainer: {
     position: "relative",

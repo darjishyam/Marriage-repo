@@ -1,7 +1,17 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AddExpenseScreen() {
   const router = useRouter();
@@ -24,93 +34,100 @@ export default function AddExpenseScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Navigation Bar */}
-      <View style={styles.navBar}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <Ionicons name="arrow-back" size={24} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.navTitle}>Add New Expense</Text>
-        <View style={styles.placeholder} />
-      </View>
-
-      {/* Form Content */}
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
       >
-        {/* Expense For Field */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Expense For</Text>
-          <TextInput
-            style={styles.input}
-            value={expenseFor}
-            onChangeText={setExpenseFor}
-            placeholder="Moon"
-            placeholderTextColor="#999"
-          />
+        {/* Navigation Bar */}
+        <View style={styles.navBar}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <Ionicons name="arrow-back" size={24} color="#000" />
+          </TouchableOpacity>
+          <Text style={styles.navTitle}>Add New Expense</Text>
+          <View style={styles.placeholder} />
         </View>
 
-        {/* Total Amount Field */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Total Amount</Text>
-          <TextInput
-            style={styles.input}
-            value={totalAmount}
-            onChangeText={setTotalAmount}
-            placeholder="₹ 2000"
-            placeholderTextColor="#999"
-            keyboardType="numeric"
-          />
-        </View>
-
-        {/* Paid Deposit Amount Field */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Paid Deposit Amount</Text>
-          <TextInput
-            style={styles.input}
-            value={paidDepositAmount}
-            onChangeText={setPaidDepositAmount}
-            placeholder="₹ 1000"
-            placeholderTextColor="#999"
-            keyboardType="numeric"
-          />
-        </View>
-
-        {/* Pending Amount Field */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Pending Amount</Text>
-          <TextInput
-            style={styles.input}
-            value={pendingAmount}
-            onChangeText={setPendingAmount}
-            placeholder="₹ 1000"
-            placeholderTextColor="#999"
-            keyboardType="numeric"
-          />
-        </View>
-      </ScrollView>
-
-      {/* Action Buttons */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.saveAndAddButton}
-          onPress={handleSaveAndAddAnother}
+        {/* Form Content */}
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
-          <Text style={styles.saveAndAddButtonText}>Save And Add Another</Text>
-        </TouchableOpacity>
+          {/* Expense For Field */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Expense For</Text>
+            <TextInput
+              style={styles.input}
+              value={expenseFor}
+              onChangeText={setExpenseFor}
+              placeholder="Moon"
+              placeholderTextColor="#999"
+            />
+          </View>
 
-        <TouchableOpacity
-          style={styles.saveButton}
-          onPress={handleSave}
-        >
-          <Text style={styles.saveButtonText}>Save</Text>
-        </TouchableOpacity>
-      </View>
+          {/* Total Amount Field */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Total Amount</Text>
+            <TextInput
+              style={styles.input}
+              value={totalAmount}
+              onChangeText={setTotalAmount}
+              placeholder="₹ 2000"
+              placeholderTextColor="#999"
+              keyboardType="numeric"
+            />
+          </View>
+
+          {/* Paid Deposit Amount Field */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Paid Deposit Amount</Text>
+            <TextInput
+              style={styles.input}
+              value={paidDepositAmount}
+              onChangeText={setPaidDepositAmount}
+              placeholder="₹ 1000"
+              placeholderTextColor="#999"
+              keyboardType="numeric"
+            />
+          </View>
+
+          {/* Pending Amount Field */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Pending Amount</Text>
+            <TextInput
+              style={styles.input}
+              value={pendingAmount}
+              onChangeText={setPendingAmount}
+              placeholder="₹ 1000"
+              placeholderTextColor="#999"
+              keyboardType="numeric"
+            />
+          </View>
+        </ScrollView>
+
+        {/* Action Buttons */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.saveAndAddButton}
+            onPress={handleSaveAndAddAnother}
+          >
+            <Text style={styles.saveAndAddButtonText}>Save And Add Another</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.saveButton}
+            onPress={handleSave}
+          >
+            <Text style={styles.saveButtonText}>Save</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

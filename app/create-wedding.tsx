@@ -4,15 +4,17 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
+  KeyboardAvoidingView,
   Modal,
   Platform,
-  SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CreateWeddingScreen() {
   const router = useRouter();
@@ -53,62 +55,72 @@ export default function CreateWeddingScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Add New Wedding</Text>
-        <View style={styles.placeholder} />
-      </View>
-
-      {/* Form Content */}
-      <View style={styles.formContainer}>
-        {/* Groom's Name */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Groom's Name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Mirror"
-            placeholderTextColor="#999"
-            value={groomName}
-            onChangeText={setGroomName}
-          />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="#000" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Add New Wedding</Text>
+          <View style={styles.placeholder} />
         </View>
 
-        {/* Bride's Name */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Bride's Name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Moon"
-            placeholderTextColor="#999"
-            value={brideName}
-            onChangeText={setBrideName}
-          />
-        </View>
+        {/* Form Content */}
+        <ScrollView
+          style={styles.formContainer}
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Groom's Name */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Groom's Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Mirror"
+              placeholderTextColor="#999"
+              value={groomName}
+              onChangeText={setGroomName}
+            />
+          </View>
 
-        {/* Marriage Date */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Marriage Date</Text>
-          <TouchableOpacity
-            style={styles.dateInputContainer}
-            onPress={handleDatePress}
-          >
-            <Text style={styles.dateInputText}>
-              {formatDate(marriageDate)}
-            </Text>
-            <Ionicons name="calendar-outline" size={20} color="#999" style={styles.calendarIcon} />
+          {/* Bride's Name */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Bride's Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Moon"
+              placeholderTextColor="#999"
+              value={brideName}
+              onChangeText={setBrideName}
+            />
+          </View>
+
+          {/* Marriage Date */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Marriage Date</Text>
+            <TouchableOpacity
+              style={styles.dateInputContainer}
+              onPress={handleDatePress}
+            >
+              <Text style={styles.dateInputText}>
+                {formatDate(marriageDate)}
+              </Text>
+              <Ionicons name="calendar-outline" size={20} color="#999" style={styles.calendarIcon} />
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+
+        {/* Save Button */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+            <Text style={styles.saveButtonText}>Save</Text>
           </TouchableOpacity>
         </View>
-      </View>
-
-      {/* Save Button */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-          <Text style={styles.saveButtonText}>Save</Text>
-        </TouchableOpacity>
-      </View>
+      </KeyboardAvoidingView>
 
       {/* Date Picker Modal */}
       <Modal
@@ -147,7 +159,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === "ios" ? 10 : 20,
+    paddingTop: 10,
     paddingBottom: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#F0F0F0",
@@ -212,7 +224,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     paddingHorizontal: 20,
-    paddingBottom: Platform.OS === "ios" ? 34 : 20,
+    paddingBottom: 20,
+    paddingTop: 20,
   },
   saveButton: {
     backgroundColor: "#000",

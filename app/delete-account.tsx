@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { Platform, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function DeleteAccountScreen() {
   const router = useRouter();
@@ -25,47 +26,49 @@ export default function DeleteAccountScreen() {
         <View style={styles.placeholder} />
       </View>
 
-      {/* Main Content */}
-      <View style={styles.content}>
-        {/* Trash Icon with Decorative Elements */}
-        <View style={styles.iconContainer}>
-          {/* Decorative dots */}
-          <View style={[styles.decorativeDot, { top: 30, left: 50 }]} />
-          <View style={[styles.decorativeDot, { top: 70, right: 60 }]} />
-          <View style={[styles.decorativeDot, { bottom: 50, left: 40 }]} />
-          <View style={[styles.decorativeDot, { bottom: 70, right: 50 }]} />
-          <View style={[styles.decorativeDot, { top: 50, left: 20 }]} />
-          <View style={[styles.decorativeDot, { top: 90, right: 30 }]} />
+      {/* Main Content - Scrollable */}
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.content}>
+          {/* Trash Icon with Decorative Elements */}
+          <View style={styles.iconContainer}>
+            {/* Decorative dots */}
+            <View style={[styles.decorativeDot, { top: 30, left: 50 }]} />
+            <View style={[styles.decorativeDot, { top: 70, right: 60 }]} />
+            <View style={[styles.decorativeDot, { bottom: 50, left: 40 }]} />
+            <View style={[styles.decorativeDot, { bottom: 70, right: 50 }]} />
+            <View style={[styles.decorativeDot, { top: 50, left: 20 }]} />
+            <View style={[styles.decorativeDot, { top: 90, right: 30 }]} />
 
-          {/* Decorative circles */}
-          <View style={[styles.decorativeCircle, { top: 40, right: 40 }]} />
-          <View style={[styles.decorativeCircle, { bottom: 60, left: 60 }]} />
-          <View style={[styles.decorativeCircle, { top: 20, right: 20 }]} />
+            {/* Decorative circles */}
+            <View style={[styles.decorativeCircle, { top: 40, right: 40 }]} />
+            <View style={[styles.decorativeCircle, { bottom: 60, left: 60 }]} />
+            <View style={[styles.decorativeCircle, { top: 20, right: 20 }]} />
 
-          {/* Decorative stars */}
-          <View style={[styles.decorativeStar, { top: 60, left: 30 }]} />
-          <View style={[styles.decorativeStar, { bottom: 40, right: 30 }]} />
+            {/* Decorative stars */}
+            <View style={[styles.decorativeStar, { top: 60, left: 30 }]} />
+            <View style={[styles.decorativeStar, { bottom: 40, right: 30 }]} />
 
-          {/* Trash icon */}
-          <Ionicons name="trash-outline" size={140} color="#E0E0E0" />
+            {/* Trash icon */}
+            <Ionicons name="trash-outline" size={140} color="#E0E0E0" />
+          </View>
+
+          {/* Heading */}
+          <Text style={styles.heading}>Delete Account</Text>
+
+          {/* Warning Text */}
+          <Text style={styles.warningText}>
+            Are you sure you want to delete your account? This action is irreversible. Once deleted, you will lose access to your account permanently, and all associated data will be erased.
+          </Text>
+
+          {/* Delete Button */}
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={handleDeleteAccount}
+          >
+            <Text style={styles.deleteButtonText}>Delete Account</Text>
+          </TouchableOpacity>
         </View>
-
-        {/* Heading */}
-        <Text style={styles.heading}>Delete Account</Text>
-
-        {/* Warning Text */}
-        <Text style={styles.warningText}>
-          Are you sure you want to delete your account? This action is irreversible. Once deleted, you will lose access to your account permanently, and all associated data will be erased.
-        </Text>
-
-        {/* Delete Button */}
-        <TouchableOpacity
-          style={styles.deleteButton}
-          onPress={handleDeleteAccount}
-        >
-          <Text style={styles.deleteButtonText}>Delete Account</Text>
-        </TouchableOpacity>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -80,7 +83,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === "ios" ? 8 : 16,
+    paddingTop: 16,
     paddingBottom: 12,
     borderBottomWidth: 0,
   },
@@ -96,12 +99,15 @@ const styles = StyleSheet.create({
   placeholder: {
     width: 40,
   },
+  scrollContent: {
+    flexGrow: 1,
+  },
   content: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingBottom: Platform.OS === "ios" ? 88 : 64,
+    paddingBottom: 64,
   },
   iconContainer: {
     position: "relative",

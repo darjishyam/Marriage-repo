@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AddGuestScreen() {
   const router = useRouter();
@@ -23,78 +24,85 @@ export default function AddGuestScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Navigation Bar */}
-      <View style={styles.navBar}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <Ionicons name="arrow-back" size={24} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.navTitle}>Add New Guest</Text>
-        <View style={styles.placeholder} />
-      </View>
-
-      {/* Form Content */}
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
-        {/* Name Field */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Name</Text>
-          <TextInput
-            style={styles.input}
-            value={name}
-            onChangeText={setName}
-            placeholder="Moon"
-            placeholderTextColor="#999"
-          />
+        {/* Navigation Bar */}
+        <View style={styles.navBar}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <Ionicons name="arrow-back" size={24} color="#000" />
+          </TouchableOpacity>
+          <Text style={styles.navTitle}>Add New Guest</Text>
+          <View style={styles.placeholder} />
         </View>
 
-        {/* Total family Count Field */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Total family Count</Text>
-          <TextInput
-            style={styles.input}
-            value={totalFamilyCount}
-            onChangeText={setTotalFamilyCount}
-            placeholder="5"
-            placeholderTextColor="#999"
-            keyboardType="numeric"
-          />
-        </View>
-
-        {/* City/Village Field */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>City/Village</Text>
-          <TextInput
-            style={styles.input}
-            value={cityVillage}
-            onChangeText={setCityVillage}
-            placeholder="Surat"
-            placeholderTextColor="#999"
-          />
-        </View>
-      </ScrollView>
-
-      {/* Action Buttons */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.saveAndAddButton}
-          onPress={handleSaveAndAddAnother}
+        {/* Form Content */}
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
-          <Text style={styles.saveAndAddButtonText}>Save And Add Another</Text>
-        </TouchableOpacity>
+          {/* Name Field */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Name</Text>
+            <TextInput
+              style={styles.input}
+              value={name}
+              onChangeText={setName}
+              placeholder="Moon"
+              placeholderTextColor="#999"
+            />
+          </View>
 
-        <TouchableOpacity
-          style={styles.saveButton}
-          onPress={handleSave}
-        >
-          <Text style={styles.saveButtonText}>Save</Text>
-        </TouchableOpacity>
-      </View>
+          {/* Total family Count Field */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Total family Count</Text>
+            <TextInput
+              style={styles.input}
+              value={totalFamilyCount}
+              onChangeText={setTotalFamilyCount}
+              placeholder="5"
+              placeholderTextColor="#999"
+              keyboardType="numeric"
+            />
+          </View>
+
+          {/* City/Village Field */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>City/Village</Text>
+            <TextInput
+              style={styles.input}
+              value={cityVillage}
+              onChangeText={setCityVillage}
+              placeholder="Surat"
+              placeholderTextColor="#999"
+            />
+          </View>
+        </ScrollView>
+
+        {/* Action Buttons */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.saveAndAddButton}
+            onPress={handleSaveAndAddAnother}
+          >
+            <Text style={styles.saveAndAddButtonText}>Save And Add Another</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.saveButton}
+            onPress={handleSave}
+          >
+            <Text style={styles.saveButtonText}>Save</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -109,7 +117,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === "ios" ? 8 : 16,
+    paddingTop: 16,
     paddingBottom: 12,
     borderBottomWidth: 0,
   },
@@ -154,7 +162,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     paddingHorizontal: 20,
-    paddingBottom: Platform.OS === "ios" ? 34 : 20,
+    paddingBottom: 20,
     paddingTop: 12,
     borderTopWidth: 1,
     borderTopColor: "#F0F0F0",
