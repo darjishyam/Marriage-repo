@@ -1,7 +1,7 @@
 import { useWedding } from "@/contexts/WeddingContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { Dimensions, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -16,7 +16,7 @@ export default function MyWeddingScreen() {
         <Text style={styles.title}>Shagun</Text>
 
         {/* Illustration */}
-        <Image 
+        <Image
           source={require("../../assets/images/screen4.png")}
           style={styles.illustration}
         />
@@ -30,7 +30,7 @@ export default function MyWeddingScreen() {
         </Text>
 
         {/* Button */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.button}
           onPress={() => router.push("/create-wedding")}
         >
@@ -45,7 +45,7 @@ export default function MyWeddingScreen() {
 
 function WeddingDashboard({ weddingData }: { weddingData: { groomName: string; brideName: string; date: Date } }) {
   const router = useRouter();
-  
+
   const formatDate = (date: Date) => {
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const day = date.getDate();
@@ -56,110 +56,122 @@ function WeddingDashboard({ weddingData }: { weddingData: { groomName: string; b
 
   return (
     <View style={styles.dashboardContainer}>
-      {/* Header */}
-      <View style={styles.header}>
+      {/* Header Area */}
+      <View style={styles.headerArea}>
         <Text style={styles.headerTitle}>Shagun</Text>
-      </View>
 
-      {/* Event Selector */}
-      <View style={styles.eventSelector}>
-        <View style={styles.profileImagesContainer}>
-          <Image 
-            source={require("../../assets/images/bride.jpg")}
-            style={[styles.profileImage, styles.brideImage]}
-          />
-          <Image 
-            source={require("../../assets/images/groom.jpg")}
-            style={[styles.profileImage, styles.groomImage]}
-          />
-        </View>
-        <View style={styles.eventInfo}>
-          <View style={styles.namesRow}>
-            <Text style={styles.brideName}>{weddingData.brideName}</Text>
-            <Ionicons name="heart" size={14} color="#000" style={styles.ringIcon} />
-            <Text style={styles.groomName}>{weddingData.groomName}</Text>
+        {/* Names Row */}
+        <View style={styles.namesRowHeader}>
+          <View style={styles.profileImagesContainer}>
+            <Image
+              source={require("../../assets/images/bride.jpg")}
+              style={[styles.profileImage, styles.brideImage]}
+            />
+            <Image
+              source={require("../../assets/images/groom.jpg")}
+              style={[styles.profileImage, styles.groomImage]}
+            />
           </View>
-          <Text style={styles.eventDate}>{formatDate(weddingData.date)}</Text>
+
+          <View style={styles.nameDateContainer}>
+            <View style={styles.namesRow}>
+              <Text style={styles.brideName}>{weddingData.brideName}</Text>
+              <Ionicons name="heart" size={14} color="#000" style={styles.ringIcon} />
+              <Text style={styles.groomName}>{weddingData.groomName}</Text>
+            </View>
+            <Text style={styles.eventDate}>{formatDate(weddingData.date)}</Text>
+          </View>
+
+          <TouchableOpacity style={styles.dropdownButton}>
+            <Ionicons name="chevron-down" size={24} color="#000" />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.dropdownButton}>
-          <Ionicons name="chevron-down" size={20} color="#000" />
-        </TouchableOpacity>
       </View>
 
-      {/* Cards Container */}
-      <View style={styles.cardsContainer}>
+      {/* White Content Container */}
+      <ScrollView
+        style={styles.whiteContainer}
+        contentContainerStyle={styles.whiteContent}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Shagun Book Card */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.card, styles.shagunBookCard]}
           onPress={() => router.push("/shagun-book")}
-          activeOpacity={0.8}
+          activeOpacity={0.9}
         >
           <View style={styles.cardHeader}>
-            <Ionicons name="book-outline" size={18} color="#000" />
+            <View style={styles.iconCircle}>
+              <Ionicons name="book" size={18} color="#000" />
+            </View>
             <Text style={styles.cardTitle}>Shagun Book</Text>
           </View>
-          <View style={styles.cardContent}>
-            <View style={styles.cardStat}>
-              <Ionicons name="person-outline" size={18} color="#000" />
-              <Text style={styles.cardLabel}>People</Text>
-              <Text style={styles.cardValue}>20</Text>
+          <View style={styles.cardInternalRow}>
+            <View style={[styles.statBox, styles.shagunStatBox]}>
+              <Ionicons name="person-outline" size={20} color="#000" style={styles.statIcon} />
+              <Text style={styles.statLabel}>People</Text>
+              <Text style={styles.statValue}>20</Text>
             </View>
-            <View style={styles.cardStat}>
-              <Ionicons name="cash-outline" size={18} color="#000" />
-              <Text style={styles.cardLabel}>Total Chandlo</Text>
-              <Text style={styles.cardValue}>₹ 2,000</Text>
+            <View style={[styles.statBox, styles.shagunStatBox]}>
+              <Ionicons name="cash-outline" size={20} color="#000" style={styles.statIcon} />
+              <Text style={styles.statLabel}>Total Chandlo</Text>
+              <Text style={styles.statValue}>₹ 2,000</Text>
             </View>
           </View>
         </TouchableOpacity>
 
         {/* Expense Card */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.card, styles.expenseCard]}
           onPress={() => router.push("/expenses")}
-          activeOpacity={0.8}
+          activeOpacity={0.9}
         >
           <View style={styles.cardHeader}>
-            <Ionicons name="wallet-outline" size={18} color="#000" />
+            <View style={styles.iconCircle}>
+              <Ionicons name="wallet" size={18} color="#000" />
+            </View>
             <Text style={styles.cardTitle}>Expense</Text>
           </View>
-          <View style={styles.cardContent}>
-            <View style={styles.cardStat}>
-              <Ionicons name="cash-outline" size={18} color="#000" />
-              <Text style={styles.cardLabel}>Total Budget</Text>
-              <Text style={styles.cardValue}>₹ 20,000</Text>
+          <View style={styles.cardInternalRow}>
+            <View style={[styles.statBox, styles.expenseStatBox]}>
+              <Ionicons name="cash-outline" size={20} color="#000" style={styles.statIcon} />
+              <Text style={styles.statLabel}>Total Budget</Text>
+              <Text style={styles.statValue}>20</Text>
             </View>
-            <View style={styles.cardStat}>
-              <Ionicons name="refresh-outline" size={18} color="#000" />
-              <Text style={styles.cardLabel}>Spent</Text>
-              <Text style={styles.cardValue}>₹ 2,000</Text>
+            <View style={[styles.statBox, styles.expenseStatBox]}>
+              <Ionicons name="refresh-outline" size={20} color="#000" style={styles.statIcon} />
+              <Text style={styles.statLabel}>Spent</Text>
+              <Text style={styles.statValue}>₹ 2,000</Text>
             </View>
           </View>
         </TouchableOpacity>
 
         {/* Invitation Card */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.card, styles.invitationCard]}
           onPress={() => router.push("/invitation-list")}
-          activeOpacity={0.8}
+          activeOpacity={0.9}
         >
           <View style={styles.cardHeader}>
-            <Ionicons name="paper-plane-outline" size={18} color="#000" />
+            <View style={styles.iconCircle}>
+              <Ionicons name="paper-plane" size={18} color="#000" />
+            </View>
             <Text style={styles.cardTitle}>Invitation</Text>
           </View>
-          <View style={styles.cardContent}>
-            <View style={styles.cardStat}>
-              <Ionicons name="send-outline" size={18} color="#000" />
-              <Text style={styles.cardLabel}>Invitation Sent</Text>
-              <Text style={styles.cardValue}>20</Text>
+          <View style={styles.cardInternalRow}>
+            <View style={[styles.statBox, styles.invitationStatBox]}>
+              <Ionicons name="send-outline" size={20} color="#000" style={styles.statIcon} />
+              <Text style={styles.statLabel}>Invitation Sent</Text>
+              <Text style={styles.statValue}>20</Text>
             </View>
-            <View style={styles.cardStat}>
-              <Ionicons name="people-outline" size={18} color="#000" />
-              <Text style={styles.cardLabel}>Total Guest</Text>
-              <Text style={styles.cardValue}>20</Text>
+            <View style={[styles.statBox, styles.invitationStatBox]}>
+              <Ionicons name="people-outline" size={20} color="#000" style={styles.statIcon} />
+              <Text style={styles.statLabel}>Total Guest</Text>
+              <Text style={styles.statValue}>₹ 2,000</Text>
             </View>
           </View>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -171,7 +183,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 60,
     alignItems: "center",
-    paddingBottom: Platform.OS === "ios" ? 88 : 70,
+    paddingBottom: Platform.OS === "ios" ? 110 : 100,
   },
   title: {
     fontSize: 28,
@@ -212,36 +224,31 @@ const styles = StyleSheet.create({
   // Dashboard Styles
   dashboardContainer: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#F5F5F5", // Light grey background for top part
   },
-  cardsContainer: {
-    paddingTop: 8,
-  },
-  header: {
+  headerArea: {
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === "ios" ? 50 : 40,
-    paddingBottom: 8,
+    paddingTop: Platform.OS === "ios" ? 60 : 40,
+    paddingBottom: 20,
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: "700",
     color: "#8A0030",
+    marginBottom: 20,
   },
-  eventSelector: {
+  namesRowHeader: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 20,
-    marginBottom: 16,
   },
   profileImagesContainer: {
     flexDirection: "row",
-    marginRight: 12,
-    position: "relative",
+    marginRight: 10,
   },
   profileImage: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     borderWidth: 2,
     borderColor: "#FFF",
   },
@@ -249,44 +256,58 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   groomImage: {
-    marginLeft: -12,
+    marginLeft: -15, // Overlap
     zIndex: 1,
   },
-  eventInfo: {
+  nameDateContainer: {
     flex: 1,
+    justifyContent: "center",
   },
   namesRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 4,
+    marginBottom: 2,
   },
   brideName: {
-    fontSize: 15,
-    fontWeight: "600",
+    fontSize: 18,
+    fontWeight: "700",
     color: "#000",
   },
   ringIcon: {
-    marginHorizontal: 6,
+    marginHorizontal: 8,
   },
   groomName: {
-    fontSize: 15,
-    fontWeight: "600",
+    fontSize: 18,
+    fontWeight: "700",
     color: "#000",
   },
   eventDate: {
     fontSize: 13,
-    color: "#666",
+    color: "#888",
   },
   dropdownButton: {
     padding: 4,
   },
+
+  // White Container for Cards
+  whiteContainer: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    marginTop: 10,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingVertical: 24,
+  },
+  whiteContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 110, // Clearance for Footer
+  },
+
   // Card Styles
   card: {
-    borderRadius: 16,
-    padding: 20,
-    marginHorizontal: 20,
-    marginBottom: 16,
-    minHeight: 120,
+    borderRadius: 24,
+    padding: 16,
+    marginBottom: 20,
   },
   shagunBookCard: {
     backgroundColor: "#FCE9B0",
@@ -296,36 +317,60 @@ const styles = StyleSheet.create({
   },
   invitationCard: {
     backgroundColor: "#DFF1FF",
-    marginBottom: Platform.OS === "ios" ? 20 : 16,
+    // Remove extra margin bottom as scrollview padding handles clearance
   },
   cardHeader: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 16,
   },
+  iconCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "rgba(0,0,0,0.05)",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
   cardTitle: {
     fontSize: 16,
     fontWeight: "700",
     color: "#000",
-    marginLeft: 8,
   },
-  cardContent: {
+
+  // Internal Row
+  cardInternalRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: 20,
+    gap: 12,
   },
-  cardStat: {
+  statBox: {
     flex: 1,
-    alignItems: "flex-start",
+    borderRadius: 16,
+    padding: 16,
+    height: 110,
+    justifyContent: "space-between",
   },
-  cardLabel: {
-    fontSize: 11,
-    color: "#666",
-    marginTop: 6,
+  shagunStatBox: {
+    backgroundColor: "rgba(244, 222, 156, 0.6)", // #F4DE9C darker yellow
+  },
+  expenseStatBox: {
+    backgroundColor: "rgba(242, 198, 206, 0.6)", // #F2C6CE darker pink
+  },
+  invitationStatBox: {
+    backgroundColor: "rgba(203, 230, 248, 0.6)", // #CBE6F8 darker blue
+  },
+  statIcon: {
     marginBottom: 4,
   },
-  cardValue: {
-    fontSize: 20,
+  statLabel: {
+    fontSize: 12,
+    color: "#666",
+    marginBottom: 2,
+  },
+  statValue: {
+    fontSize: 18,
     fontWeight: "700",
     color: "#000",
   },

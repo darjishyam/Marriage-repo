@@ -6,14 +6,24 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
+        tabBarActiveTintColor: "#FFFFFF",
+        tabBarInactiveTintColor: "#666666",
         tabBarStyle: {
-          height: 70,
-          paddingBottom: 10,
+          height: 80,
+          paddingBottom: 20,
+          paddingTop: 10,
           position: "absolute",
           backgroundColor: "#000",
           borderTopWidth: 0,
           elevation: 0,
           shadowOpacity: 0,
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: "600",
+          marginTop: 4,
         }
       }}
     >
@@ -22,7 +32,7 @@ export default function TabLayout() {
         options={{
           title: "My Wedding",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="heart-outline" size={22} color={color} />
+            <Ionicons name="heart" size={24} color={color} />
           ),
         }}
       />
@@ -32,7 +42,7 @@ export default function TabLayout() {
         options={{
           title: "My Shagun",
           tabBarIcon: ({ color }) => (
-            <Ionicons name="book-outline" size={22} color={color} />
+            <Ionicons name="wallet" size={24} color={color} />
           ),
         }}
       />
@@ -42,7 +52,7 @@ export default function TabLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ color }) => (
-            <Ionicons name="person-outline" size={22} color={color} />
+            <Ionicons name="person" size={24} color={color} />
           ),
         }}
       />

@@ -9,7 +9,7 @@ export default function ExpensesScreen() {
     <SafeAreaView style={styles.container}>
       {/* Navigation Bar */}
       <View style={styles.navBar}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.back()}
         >
@@ -30,12 +30,12 @@ export default function ExpensesScreen() {
           <View style={[styles.decorativeDot, { bottom: 70, right: 50 }]} />
           <View style={[styles.decorativeDot, { top: 50, left: 20 }]} />
           <View style={[styles.decorativeDot, { top: 90, right: 30 }]} />
-          
+
           {/* Decorative circles */}
           <View style={[styles.decorativeCircle, { top: 40, right: 40 }]} />
           <View style={[styles.decorativeCircle, { bottom: 60, left: 60 }]} />
           <View style={[styles.decorativeCircle, { top: 20, right: 20 }]} />
-          
+
           {/* Dollar icon in circle */}
           <View style={styles.dollarIconContainer}>
             <Text style={styles.dollarIcon}>$</Text>
@@ -49,7 +49,7 @@ export default function ExpensesScreen() {
         <Text style={styles.secondaryText}>Start Managing your Wedding expenses</Text>
 
         {/* Add Expense Button */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.addButton}
           onPress={() => router.push("/add-expense")}
         >
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     paddingVertical: 14,
     paddingHorizontal: 48,
-    borderRadius: 10,
+    borderRadius: 30,
     minWidth: 180,
   },
   addButtonText: {

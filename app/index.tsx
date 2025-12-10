@@ -1,6 +1,6 @@
-import { Redirect } from "expo-router";
 import { useOnboarding } from "@/contexts/OnboardingContext";
-import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { Redirect } from "expo-router";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 export default function Index() {
   const { hasCompletedOnboarding, isLoading } = useOnboarding();
@@ -14,9 +14,10 @@ export default function Index() {
   }
 
   // If onboarding is not completed, show onboarding
-  if (!hasCompletedOnboarding) {
-    return <Redirect href="/onboarding" />;
-  }
+  // Forcing onboarding for review purposes
+  // if (!hasCompletedOnboarding) {
+  return <Redirect href="/onboarding" />;
+  // }
 
   // If onboarding is completed, go to login
   return <Redirect href="/login" />;

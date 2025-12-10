@@ -27,7 +27,7 @@ export default function AddExpenseScreen() {
     <SafeAreaView style={styles.container}>
       {/* Navigation Bar */}
       <View style={styles.navBar}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.back()}
         >
@@ -38,7 +38,7 @@ export default function AddExpenseScreen() {
       </View>
 
       {/* Form Content */}
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -97,14 +97,14 @@ export default function AddExpenseScreen() {
 
       {/* Action Buttons */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.saveAndAddButton}
           onPress={handleSaveAndAddAnother}
         >
           <Text style={styles.saveAndAddButtonText}>Save And Add Another</Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
+
+        <TouchableOpacity
           style={styles.saveButton}
           onPress={handleSave}
         >
@@ -127,8 +127,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: Platform.OS === "ios" ? 8 : 16,
     paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0",
+    borderBottomWidth: 0,
   },
   backButton: {
     padding: 8,
@@ -179,7 +178,7 @@ const styles = StyleSheet.create({
   saveAndAddButton: {
     backgroundColor: "#FFFFFF",
     height: 55,
-    borderRadius: 12,
+    borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
@@ -194,7 +193,7 @@ const styles = StyleSheet.create({
   saveButton: {
     backgroundColor: "#000",
     height: 55,
-    borderRadius: 12,
+    borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
   },

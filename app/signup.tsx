@@ -1,6 +1,6 @@
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image as RNImage, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function SignUpScreen() {
   const router = useRouter();  // ✅ FIXED
@@ -45,18 +45,30 @@ export default function SignUpScreen() {
 
       {/* Google */}
       <View style={styles.socialButton}>
-        <Ionicons name="logo-google" size={22} color="#4285F4" style={{ marginRight: 10 }} />
+        <RNImage
+          source={require("../assets/images/Google.png")}
+          style={{ width: 22, height: 22, marginRight: 10, resizeMode: 'contain' }}
+        />
         <Text style={styles.socialText}>Continue with Google</Text>
       </View>
 
       {/* Facebook */}
       <View style={styles.socialButton}>
-        <FontAwesome
-          name="facebook-square"
-          size={22}
-          color="#1877F2"
-          style={{ marginRight: 10 }}
-        />
+        <View style={{
+          width: 24,
+          height: 24,
+          borderRadius: 12,
+          backgroundColor: "#1877F2",
+          justifyContent: "center",
+          alignItems: "center",
+          marginRight: 10
+        }}>
+          <FontAwesome
+            name="facebook"
+            size={16}
+            color="#FFF"
+          />
+        </View>
         <Text style={styles.socialText}>Continue with Facebook</Text>
       </View>
 

@@ -1,18 +1,18 @@
+import { CalendarPicker } from "@/components/CalendarPicker";
+import { useWedding } from "@/contexts/WeddingContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { 
+import {
   Modal,
-  Platform, 
-  SafeAreaView, 
-  StyleSheet, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  View 
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from "react-native";
-import { CalendarPicker } from "@/components/CalendarPicker";
-import { useWedding } from "@/contexts/WeddingContext";
 
 export default function CreateWeddingScreen() {
   const router = useRouter();
@@ -91,7 +91,7 @@ export default function CreateWeddingScreen() {
         {/* Marriage Date */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Marriage Date</Text>
-            <TouchableOpacity
+          <TouchableOpacity
             style={styles.dateInputContainer}
             onPress={handleDatePress}
           >
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   saveButton: {
     backgroundColor: "#000",
     height: 55,
-    borderRadius: 12,
+    borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
   },

@@ -16,14 +16,14 @@ export default function ProfileScreen() {
         <Text style={styles.headerTitle}>{t("hi_moon")} 👋</Text>
       </View>
 
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Profile Card */}
-        <View style={styles.profileCard}>
-          <Image 
+        {/* Profile Details */}
+        <View style={styles.profileSection}>
+          <Image
             source={require("../../assets/images/bride.jpg")}
             style={styles.profileImage}
           />
@@ -39,89 +39,107 @@ export default function ProfileScreen() {
         {/* Menu Items */}
         <View style={styles.menuContainer}>
           {/* Purchase Premium */}
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.menuItem}
             onPress={() => router.push("/purchase-premium")}
           >
             <View style={styles.menuItemLeft}>
-              <Ionicons name="diamond-outline" size={22} color="#FFD700" />
+              <View style={[styles.iconContainer, { backgroundColor: "#FFD700" }]}>
+                <Image
+                  source={require("../../assets/images/crown.png")}
+                  style={{ width: 24, height: 24, resizeMode: 'contain' }}
+                />
+              </View>
               <View style={styles.menuItemTextContainer}>
                 <Text style={styles.menuItemText}>{t("purchase_premium")}</Text>
                 <Text style={styles.menuItemSubtext}>{t("export_data_pdf")}</Text>
               </View>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
+            <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
           </TouchableOpacity>
 
           {/* Change Language */}
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.menuItem}
             onPress={() => setShowLanguageModal(true)}
           >
             <View style={styles.menuItemLeft}>
-              <Ionicons name="globe-outline" size={22} color="#000" />
-              <Text style={styles.menuItemText}>{t("change_language")}</Text>
+              <View style={[styles.iconContainer, { backgroundColor: "#F5F5F5" }]}>
+                <Ionicons name="globe-outline" size={20} color="#000" />
+              </View>
+              <View style={styles.menuItemTextContainer}>
+                <Text style={styles.menuItemText}>{t("change_language")}</Text>
+              </View>
             </View>
             <View style={styles.menuItemRight}>
               <Text style={styles.changeButtonText}>{t("change")}</Text>
-              <Ionicons name="chevron-forward" size={20} color="#999" />
             </View>
           </TouchableOpacity>
 
           {/* Terms of Service */}
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.menuItem}
             onPress={() => router.push("/terms-of-service")}
           >
             <View style={styles.menuItemLeft}>
-              <Ionicons name="document-text-outline" size={22} color="#000" />
+              <View style={[styles.iconContainer, { backgroundColor: "#F5F5F5" }]}>
+                <Ionicons name="document-text-outline" size={20} color="#000" />
+              </View>
               <Text style={styles.menuItemText}>{t("terms_of_service")}</Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
+            <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
           </TouchableOpacity>
 
           {/* Delete Account */}
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.menuItem}
             onPress={() => router.push("/delete-account")}
           >
             <View style={styles.menuItemLeft}>
-              <Ionicons name="trash-outline" size={22} color="#000" />
+              <View style={[styles.iconContainer, { backgroundColor: "#F5F5F5" }]}>
+                <Ionicons name="trash-outline" size={20} color="#000" />
+              </View>
               <Text style={styles.menuItemText}>{t("delete_account")}</Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
+            <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
           </TouchableOpacity>
 
           {/* Contact Us */}
           <TouchableOpacity style={styles.menuItem}>
             <View style={styles.menuItemLeft}>
-              <Ionicons name="mail-outline" size={22} color="#000" />
+              <View style={[styles.iconContainer, { backgroundColor: "#F5F5F5" }]}>
+                <Ionicons name="mail-outline" size={20} color="#000" />
+              </View>
               <Text style={styles.menuItemText}>{t("contact_us")}</Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
+            <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
           </TouchableOpacity>
 
           {/* Connect on Instagram */}
           <TouchableOpacity style={styles.menuItem}>
             <View style={styles.menuItemLeft}>
-              <Ionicons name="logo-instagram" size={22} color="#E4405F" />
+              <View style={[styles.iconContainer, { backgroundColor: "#F5F5F5" }]}>
+                <Ionicons name="logo-instagram" size={20} color="#000" />
+              </View>
               <Text style={styles.menuItemText}>{t("connect_instagram")}</Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
+            <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
           </TouchableOpacity>
 
           {/* Log out */}
           <TouchableOpacity style={[styles.menuItem, styles.lastMenuItem]}>
             <View style={styles.menuItemLeft}>
-              <Ionicons name="log-out-outline" size={22} color="#000" />
+              <View style={[styles.iconContainer, { backgroundColor: "#F5F5F5" }]}>
+                <Ionicons name="log-out-outline" size={20} color="#000" />
+              </View>
               <Text style={styles.menuItemText}>{t("log_out")}</Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
+            <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
           </TouchableOpacity>
         </View>
       </ScrollView>
 
-      {/* Change Language Modal */}
+      {/* Change Language Modal - Kept same */}
       <Modal
         visible={showLanguageModal}
         transparent={true}
@@ -129,7 +147,7 @@ export default function ProfileScreen() {
         onRequestClose={() => setShowLanguageModal(false)}
       >
         <View style={styles.modalOverlay}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.modalBackdrop}
             activeOpacity={1}
             onPress={() => setShowLanguageModal(false)}
@@ -145,7 +163,7 @@ export default function ProfileScreen() {
 
             {/* Language Options */}
             <View style={styles.languageOptions}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.languageOption}
                 onPress={() => setLanguage("English")}
               >
@@ -155,7 +173,7 @@ export default function ProfileScreen() {
                 <Text style={styles.languageOptionText}>English</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.languageOption}
                 onPress={() => setLanguage("Gujrati")}
               >
@@ -168,13 +186,13 @@ export default function ProfileScreen() {
 
             {/* Action Buttons */}
             <View style={styles.modalActions}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.cancelButton}
                 onPress={() => setShowLanguageModal(false)}
               >
                 <Text style={styles.cancelButtonText}>{t("cancel")}</Text>
               </TouchableOpacity>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.saveButton}
                 onPress={() => setShowLanguageModal(false)}
               >
@@ -197,10 +215,10 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 20,
     paddingTop: Platform.OS === "ios" ? 50 : 40,
-    paddingBottom: 20,
+    paddingBottom: 24,
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: "700",
     color: "#000",
   },
@@ -208,29 +226,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: Platform.OS === "ios" ? 20 : 16,
+    paddingBottom: 0,
     flexGrow: 1,
   },
-  profileCard: {
+  profileSection: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 16,
-    padding: 20,
-    marginHorizontal: 20,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: "#E6E6E6",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
+    paddingHorizontal: 20,
+    marginBottom: 32,
   },
   profileImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     marginRight: 16,
   },
   profileInfo: {
@@ -240,15 +248,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     color: "#000",
-    marginBottom: 4,
+    marginBottom: 2,
   },
   profileEmail: {
     fontSize: 14,
-    color: "#666",
+    color: "#999",
   },
   editButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   editButtonText: {
     fontSize: 14,
@@ -262,42 +270,46 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0",
+    paddingVertical: 16, // Increased padding
+    marginBottom: 8,
   },
   menuItemLeft: {
     flexDirection: "row",
     alignItems: "center",
     flex: 1,
   },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 16,
+  },
   menuItemTextContainer: {
-    marginLeft: 12,
     flex: 1,
   },
   menuItemText: {
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "600",
     color: "#000",
-    marginLeft: 0,
   },
   menuItemSubtext: {
     fontSize: 12,
-    color: "#666",
+    color: "#999",
     marginTop: 2,
   },
   menuItemRight: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
   },
   changeButtonText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#FF0000",
+    color: "#FF3B30", // Red color
   },
   lastMenuItem: {
-    borderBottomWidth: 0,
+    marginBottom: 0,
   },
   modalOverlay: {
     flex: 1,
@@ -372,7 +384,7 @@ const styles = StyleSheet.create({
   cancelButton: {
     flex: 1,
     height: 55,
-    borderRadius: 12,
+    borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#FFFFFF",
@@ -387,7 +399,7 @@ const styles = StyleSheet.create({
   saveButton: {
     flex: 1,
     height: 55,
-    borderRadius: 12,
+    borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#000",

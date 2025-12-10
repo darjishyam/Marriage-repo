@@ -1,78 +1,95 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { Platform, Image as RNImage, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function PurchasePremiumScreen() {
   const router = useRouter();
-  const { t } = useLanguage();
 
   return (
     <SafeAreaView style={styles.container}>
       {/* Navigation Bar */}
       <View style={styles.navBar}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.back()}
         >
           <Ionicons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
-        <Text style={styles.navTitle}>{t("purchase_premium")}</Text>
+        <Text style={styles.navTitle}>Purchase Premium</Text>
         <View style={styles.placeholder} />
       </View>
 
-      <ScrollView 
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
+      <View style={styles.content}>
         {/* Premium Card */}
-        <View style={styles.premiumCard}>
-          {/* Title with Crown */}
-          <View style={styles.titleContainer}>
-            <Ionicons name="diamond" size={28} color="#FFD700" />
+        <View style={styles.card}>
+          {/* Header */}
+          <View style={styles.cardHeader}>
+            <View style={styles.iconContainer}>
+              <RNImage
+                source={require("../assets/images/crown.png")}
+                style={{ width: 28, height: 28, resizeMode: 'contain' }}
+              />
+            </View>
             <Text style={styles.cardTitle}>Shagun</Text>
           </View>
 
           {/* Features List */}
-          <View style={styles.featuresContainer}>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={24} color="#000" />
-              <Text style={styles.featureText}>{t("ads_free")}</Text>
+          <View style={styles.featuresList}>
+            {/* Feature 1 */}
+            <View style={styles.featureRow}>
+              <View style={styles.checkIcon}>
+                <Ionicons name="checkmark" size={12} color="#000" />
+              </View>
+              <Text style={styles.featureText}>Ads Free</Text>
             </View>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={24} color="#000" />
-              <Text style={styles.featureText}>{t("export_shagun_pdf")}</Text>
+
+            {/* Feature 2 */}
+            <View style={styles.featureRow}>
+              <View style={styles.checkIcon}>
+                <Ionicons name="checkmark" size={12} color="#000" />
+              </View>
+              <Text style={styles.featureText}>Export Shagun Book to PDF</Text>
             </View>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={24} color="#000" />
-              <Text style={styles.featureText}>{t("export_guest_pdf")}</Text>
+
+            {/* Feature 3 */}
+            <View style={styles.featureRow}>
+              <View style={styles.checkIcon}>
+                <Ionicons name="checkmark" size={12} color="#000" />
+              </View>
+              <Text style={styles.featureText}>Export Gust List k to PDF</Text>
             </View>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={24} color="#000" />
-              <Text style={styles.featureText}>{t("export_expense_pdf")}</Text>
+
+            {/* Feature 4 */}
+            <View style={styles.featureRow}>
+              <View style={styles.checkIcon}>
+                <Ionicons name="checkmark" size={12} color="#000" />
+              </View>
+              <Text style={styles.featureText}>Export Expense Book to PDF</Text>
             </View>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={24} color="#000" />
-              <Text style={styles.featureText}>{t("support")}</Text>
+
+            {/* Feature 5 */}
+            <View style={styles.featureRow}>
+              <View style={styles.checkIcon}>
+                <Ionicons name="checkmark" size={12} color="#000" />
+              </View>
+              <Text style={styles.featureText}>Support</Text>
             </View>
           </View>
 
-          {/* Pricing */}
-          <View style={styles.pricingContainer}>
-            <Text style={styles.price}>₹120 /{t("per_month")}</Text>
-            <View style={styles.saveTag}>
-              <Text style={styles.saveTagText}>Save 25%</Text>
+          {/* Price */}
+          <View style={styles.priceContainer}>
+            <Text style={styles.price}>₹120 <Text style={styles.pricePeriod}>/month</Text></Text>
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>Save 25%</Text>
             </View>
           </View>
 
-          {/* Purchase Button */}
-          <TouchableOpacity style={styles.purchaseButton}>
-            <Ionicons name="logo-apple" size={20} color="#FFF" style={styles.appleIcon} />
-            <Text style={styles.purchaseButtonText}>{t("pay_apple")}</Text>
+          {/* Pay Button */}
+          <TouchableOpacity style={styles.payButton}>
+            <Text style={styles.payButtonText}>Pay with Apple</Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -89,8 +106,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: Platform.OS === "ios" ? 8 : 16,
     paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0",
   },
   backButton: {
     padding: 8,
@@ -104,87 +119,97 @@ const styles = StyleSheet.create({
   placeholder: {
     width: 40,
   },
-  scrollView: {
+  content: {
     flex: 1,
-  },
-  scrollContent: {
     paddingHorizontal: 20,
-    paddingTop: 40,
-    paddingBottom: 40,
+    paddingTop: 24,
   },
-  premiumCard: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 20,
+  card: {
+    backgroundColor: "#FAFAFA",
+    borderRadius: 24,
     padding: 24,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 8,
+    borderWidth: 1,
+    borderColor: "#F0F0F0",
   },
-  titleContainer: {
+  cardHeader: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 24,
-    gap: 8,
+  },
+  iconContainer: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "#FFD700", // Goldish background from screen
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
   },
   cardTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "700",
-    color: "#8A0030",
+    color: "#8A0030", // Matches Shagun text red/pink
   },
-  featuresContainer: {
-    marginBottom: 24,
+  featuresList: {
+    marginBottom: 32,
   },
-  featureItem: {
+  featureRow: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 16,
+  },
+  checkIcon: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
   },
   featureText: {
-    fontSize: 16,
+    fontSize: 15,
+    fontWeight: "500",
     color: "#000",
-    marginLeft: 12,
   },
-  pricingContainer: {
+  priceContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
     marginBottom: 24,
-    gap: 12,
   },
   price: {
-    fontSize: 24,
+    fontSize: 28,
+    fontWeight: "700",
+    color: "#000",
+    marginRight: 12,
+  },
+  pricePeriod: {
+    fontSize: 16,
+    fontWeight: "400",
+    color: "#666",
+  },
+  badge: {
+    backgroundColor: "#FCEDA6",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  badgeText: {
+    fontSize: 12,
     fontWeight: "700",
     color: "#000",
   },
-  saveTag: {
-    backgroundColor: "#FFD700",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-  },
-  saveTagText: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#000",
-  },
-  purchaseButton: {
+  payButton: {
     backgroundColor: "#000",
-    height: 55,
-    borderRadius: 12,
+    height: 56,
+    borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
-    flexDirection: "row",
-    marginBottom: 16,
   },
-  appleIcon: {
-    marginRight: 8,
-  },
-  purchaseButtonText: {
-    color: "#FFFFFF",
+  payButtonText: {
     fontSize: 16,
     fontWeight: "600",
+    color: "#FFFFFF",
   },
 });
-

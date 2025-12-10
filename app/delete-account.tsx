@@ -15,7 +15,7 @@ export default function DeleteAccountScreen() {
     <SafeAreaView style={styles.container}>
       {/* Navigation Bar */}
       <View style={styles.navBar}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.back()}
         >
@@ -36,16 +36,16 @@ export default function DeleteAccountScreen() {
           <View style={[styles.decorativeDot, { bottom: 70, right: 50 }]} />
           <View style={[styles.decorativeDot, { top: 50, left: 20 }]} />
           <View style={[styles.decorativeDot, { top: 90, right: 30 }]} />
-          
+
           {/* Decorative circles */}
           <View style={[styles.decorativeCircle, { top: 40, right: 40 }]} />
           <View style={[styles.decorativeCircle, { bottom: 60, left: 60 }]} />
           <View style={[styles.decorativeCircle, { top: 20, right: 20 }]} />
-          
+
           {/* Decorative stars */}
           <View style={[styles.decorativeStar, { top: 60, left: 30 }]} />
           <View style={[styles.decorativeStar, { bottom: 40, right: 30 }]} />
-          
+
           {/* Trash icon */}
           <Ionicons name="trash-outline" size={140} color="#E0E0E0" />
         </View>
@@ -59,7 +59,7 @@ export default function DeleteAccountScreen() {
         </Text>
 
         {/* Delete Button */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.deleteButton}
           onPress={handleDeleteAccount}
         >
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     paddingVertical: 16,
     paddingHorizontal: 48,
-    borderRadius: 12,
+    borderRadius: 30,
     minWidth: 200,
   },
   deleteButtonText: {

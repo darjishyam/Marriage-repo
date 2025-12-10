@@ -9,7 +9,7 @@ export default function ShagunBookScreen() {
     <SafeAreaView style={styles.container}>
       {/* Navigation Bar */}
       <View style={styles.navBar}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.back()}
         >
@@ -30,12 +30,12 @@ export default function ShagunBookScreen() {
           <View style={[styles.decorativeDot, { bottom: 70, right: 50 }]} />
           <View style={[styles.decorativeDot, { top: 50, left: 20 }]} />
           <View style={[styles.decorativeDot, { top: 90, right: 30 }]} />
-          
+
           {/* Decorative circles */}
           <View style={[styles.decorativeCircle, { top: 40, right: 40 }]} />
           <View style={[styles.decorativeCircle, { bottom: 60, left: 60 }]} />
           <View style={[styles.decorativeCircle, { top: 20, right: 20 }]} />
-          
+
           {/* Book icon */}
           <Ionicons name="book-outline" size={140} color="#E0E0E0" />
         </View>
@@ -47,7 +47,7 @@ export default function ShagunBookScreen() {
         <Text style={styles.secondaryText}>Save your wedding chandla forever</Text>
 
         {/* Add Shagun Button */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.addButton}
           onPress={() => router.push("/add-shagun")}
         >
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     paddingVertical: 14,
     paddingHorizontal: 48,
-    borderRadius: 10,
+    borderRadius: 30,
     minWidth: 180,
   },
   addButtonText: {
