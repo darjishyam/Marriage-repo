@@ -18,7 +18,8 @@ export default function OnboardingScreen() {
   const { completeOnboarding } = useOnboarding();
   const flatListRef = useRef<FlatList>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const { width, height } = useWindowDimensions();
+  const { width: screenWidth, height } = useWindowDimensions();
+  const width = Math.min(screenWidth, 500);
   const insets = useSafeAreaInsets();
 
   const DATA = [
