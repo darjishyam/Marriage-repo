@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ExpensesScreen() {
@@ -24,23 +24,10 @@ export default function ExpensesScreen() {
       <View style={styles.emptyContent}>
         {/* Dollar Icon with Decorative Elements */}
         <View style={styles.iconContainer}>
-          {/* Decorative dots */}
-          <View style={[styles.decorativeDot, { top: 30, left: 50 }]} />
-          <View style={[styles.decorativeDot, { top: 70, right: 60 }]} />
-          <View style={[styles.decorativeDot, { bottom: 50, left: 40 }]} />
-          <View style={[styles.decorativeDot, { bottom: 70, right: 50 }]} />
-          <View style={[styles.decorativeDot, { top: 50, left: 20 }]} />
-          <View style={[styles.decorativeDot, { top: 90, right: 30 }]} />
-
-          {/* Decorative circles */}
-          <View style={[styles.decorativeCircle, { top: 40, right: 40 }]} />
-          <View style={[styles.decorativeCircle, { bottom: 60, left: 60 }]} />
-          <View style={[styles.decorativeCircle, { top: 20, right: 20 }]} />
-
-          {/* Dollar icon in circle */}
-          <View style={styles.dollarIconContainer}>
-            <Text style={styles.dollarIcon}>$</Text>
-          </View>
+          <Image
+            source={require("../assets/images/empty_expense.png")}
+            style={{ width: 240, height: 240, resizeMode: "contain" }}
+          />
         </View>
 
         {/* Primary Text */}
@@ -95,41 +82,9 @@ const styles = StyleSheet.create({
     paddingBottom: Platform.OS === "ios" ? 88 : 64,
   },
   iconContainer: {
-    position: "relative",
     marginBottom: 48,
     alignItems: "center",
     justifyContent: "center",
-    width: 240,
-    height: 240,
-  },
-  decorativeDot: {
-    position: "absolute",
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: "#E0E0E0",
-  },
-  decorativeCircle: {
-    position: "absolute",
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: "#E0E0E0",
-  },
-  dollarIconContainer: {
-    width: 140,
-    height: 140,
-    borderRadius: 70,
-    backgroundColor: "#F5F5F5",
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 2,
-    borderColor: "#E0E0E0",
-  },
-  dollarIcon: {
-    fontSize: 60,
-    fontWeight: "300",
-    color: "#E0E0E0",
   },
   primaryText: {
     fontSize: 20,

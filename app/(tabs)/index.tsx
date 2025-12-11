@@ -77,7 +77,10 @@ function WeddingDashboard({ weddingData }: { weddingData: { groomName: string; b
           <View style={styles.nameDateContainer}>
             <View style={styles.namesRow}>
               <Text style={styles.brideName}>{weddingData.brideName}</Text>
-              <Ionicons name="heart" size={14} color="#000" style={styles.ringIcon} />
+              <Image
+                source={require("../../assets/images/mdi_ring.png")}
+                style={{ width: 20, height: 20, marginHorizontal: 8, resizeMode: "contain" }}
+              />
               <Text style={styles.groomName}>{weddingData.groomName}</Text>
             </View>
             <Text style={styles.eventDate}>{formatDate(weddingData.date)}</Text>

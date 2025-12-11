@@ -82,7 +82,7 @@ export function CalendarPicker({ selectedDate, onDateSelect, onClose }: Calendar
     for (let day = 1; day <= daysInMonth; day++) {
       const isSelected = isSelectedDate(day);
       const isTodayDate = isToday(day);
-      
+
       days.push(
         <TouchableOpacity
           key={day}
@@ -142,6 +142,9 @@ export function CalendarPicker({ selectedDate, onDateSelect, onClose }: Calendar
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 20,
+    width: "100%",
+    maxWidth: 350,
+    alignSelf: "center",
   },
   header: {
     flexDirection: "row",

@@ -235,6 +235,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
     marginBottom: 32,
+    width: "100%",
+    maxWidth: 600,
+    alignSelf: "center",
   },
   profileImage: {
     width: 56,
@@ -266,6 +269,9 @@ const styles = StyleSheet.create({
   },
   menuContainer: {
     paddingHorizontal: 20,
+    width: "100%",
+    maxWidth: 600,
+    alignSelf: "center",
   },
   menuItem: {
     flexDirection: "row",

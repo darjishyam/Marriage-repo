@@ -48,7 +48,14 @@ const styles = StyleSheet.create({
   backArrow: { fontSize: 26, marginBottom: 20, color: '#000' },
   title: { fontSize: 28, fontWeight: "700", marginBottom: 10, color: '#000' },
   subtitle: { color: "#6F6F6F", fontSize: 16, marginBottom: 30 },
-  otpContainer: { flexDirection: "row", justifyContent: "space-between", marginBottom: 40 },
+  otpContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 40,
+    width: "100%",
+    maxWidth: 320, // Constrain width on web/tablets
+    alignSelf: "center", // Center the container
+  },
   otpBox: {
     width: 60,
     height: 60,

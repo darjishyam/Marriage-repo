@@ -134,7 +134,7 @@ export default function OnboardingScreen() {
       </TouchableOpacity>
 
       {/* Bottom Controls Overlay */}
-      <View style={[styles.bottomRow, { bottom: insets.bottom + 30 }]}>
+      <View style={[styles.bottomRow, { bottom: insets.bottom + 40 }]}>
         <View style={styles.indicatorContainer}>
           {DATA.map((_, index) => (
             <View
