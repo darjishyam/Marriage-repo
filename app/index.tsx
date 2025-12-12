@@ -17,10 +17,6 @@ export default function Index() {
   // Forcing onboarding for review purposes
   // if (!hasCompletedOnboarding) {
   return <Redirect href="/onboarding" />;
-  // }
-
-  // If onboarding is completed, go to login
-  return <Redirect href="/login" />;
 }
 
 const styles = StyleSheet.create({
