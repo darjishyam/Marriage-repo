@@ -115,12 +115,12 @@ function WeddingDashboard({ weddingData }: { weddingData: { groomName: string; b
           </View>
           <View style={styles.cardInternalRow}>
             <View style={[styles.statBox, styles.shagunStatBox]}>
-              <Ionicons name="person-outline" size={20} color="#000" style={styles.statIcon} />
+              <Ionicons name="person" size={24} color="#000" style={styles.statIcon} />
               <Text style={styles.statLabel}>People</Text>
               <Text style={styles.statValue}>20</Text>
             </View>
             <View style={[styles.statBox, styles.shagunStatBox]}>
-              <Ionicons name="cash-outline" size={20} color="#000" style={styles.statIcon} />
+              <Ionicons name="cash" size={24} color="#000" style={styles.statIcon} />
               <Text style={styles.statLabel}>Total Chandlo</Text>
               <Text style={styles.statValue}>₹ 2,000</Text>
             </View>
@@ -141,12 +141,12 @@ function WeddingDashboard({ weddingData }: { weddingData: { groomName: string; b
           </View>
           <View style={styles.cardInternalRow}>
             <View style={[styles.statBox, styles.expenseStatBox]}>
-              <Ionicons name="cash-outline" size={20} color="#000" style={styles.statIcon} />
+              <Image source={require("../../assets/images/dollar-circle.png")} style={{ width: 24, height: 24, marginBottom: 8, resizeMode: "contain", tintColor: "#000" }} />
               <Text style={styles.statLabel}>Total Budget</Text>
               <Text style={styles.statValue}>20</Text>
             </View>
             <View style={[styles.statBox, styles.expenseStatBox]}>
-              <Ionicons name="refresh-outline" size={20} color="#000" style={styles.statIcon} />
+              <Image source={require("../../assets/images/money-send.png")} style={{ width: 24, height: 24, marginBottom: 8, resizeMode: "contain", tintColor: "#000" }} />
               <Text style={styles.statLabel}>Spent</Text>
               <Text style={styles.statValue}>₹ 2,000</Text>
             </View>
@@ -167,12 +167,12 @@ function WeddingDashboard({ weddingData }: { weddingData: { groomName: string; b
           </View>
           <View style={styles.cardInternalRow}>
             <View style={[styles.statBox, styles.invitationStatBox]}>
-              <Ionicons name="send-outline" size={20} color="#000" style={styles.statIcon} />
+              <Image source={require("../../assets/images/direct-send.png")} style={{ width: 24, height: 24, marginBottom: 8, resizeMode: "contain", tintColor: "#000" }} />
               <Text style={styles.statLabel}>Invitation Sent</Text>
               <Text style={styles.statValue}>20</Text>
             </View>
             <View style={[styles.statBox, styles.invitationStatBox]}>
-              <Ionicons name="people-outline" size={20} color="#000" style={styles.statIcon} />
+              <Image source={require("../../assets/images/empty_guest.png")} style={{ width: 24, height: 24, marginBottom: 8, resizeMode: "contain", tintColor: "#000" }} />
               <Text style={styles.statLabel}>Total Guest</Text>
               <Text style={styles.statValue}>₹ 2,000</Text>
             </View>
