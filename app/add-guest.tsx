@@ -1,26 +1,52 @@
+
+import { useGuest } from "@/contexts/GuestContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AddGuestScreen() {
   const router = useRouter();
-  const [name, setName] = useState("Moon");
-  const [totalFamilyCount, setTotalFamilyCount] = useState("5");
-  const [cityVillage, setCityVillage] = useState("Surat");
+  const { addGuest } = useGuest();
 
-  const handleSaveAndAddAnother = () => {
-    // TODO: Save guest and reset form
-    setName("Moon");
-    setTotalFamilyCount("5");
-    setCityVillage("Surat");
+  const [name, setName] = useState("");
+  const [totalFamilyCount, setTotalFamilyCount] = useState("");
+  const [cityVillage, setCityVillage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const resetForm = () => {
+    setName("");
+    setTotalFamilyCount("");
+    setCityVillage("");
   };
 
-  const handleSave = () => {
-    // TODO: Save guest and navigate back
-    router.back();
-  };
+  const handleSaveCommon = async (shouldGoBack: boolean) => {
+    if (!name.trim() || !totalFamilyCount.trim() || !cityVillage.trim()) {
+      Alert.alert("Error", "Please fill all fields");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await addGuest(name, parseInt(totalFamilyCount), cityVillage);
+      Alert.alert("Success", "Guest added successfully");
+      if (shouldGoBack) {
+        // Redirect to Home Page as requested
+        router.navigate("/(tabs)");
+      } else {
+        resetForm();
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to add guest");
+    } finally {
+      setLoading(false);
+
+    }
+  }
+
+  const handleSaveAndAddAnother = () => handleSaveCommon(false);
+  const handleSave = () => handleSaveCommon(true);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -89,17 +115,19 @@ export default function AddGuestScreen() {
         {/* Action Buttons */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity
-            style={styles.saveAndAddButton}
+            style={[styles.saveAndAddButton, loading && { opacity: 0.7 }]}
             onPress={handleSaveAndAddAnother}
+            disabled={loading}
           >
             <Text style={styles.saveAndAddButtonText}>Save And Add Another</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.saveButton}
+            style={[styles.saveButton, loading && { opacity: 0.7 }]}
             onPress={handleSave}
+            disabled={loading}
           >
-            <Text style={styles.saveButtonText}>Save</Text>
+            <Text style={styles.saveButtonText}>{loading ? "Saving..." : "Save"}</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>

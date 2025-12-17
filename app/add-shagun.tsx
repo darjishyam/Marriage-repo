@@ -2,7 +2,7 @@ import { useShagun } from "@/contexts/ShagunContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AddShagunScreen() {
@@ -13,16 +13,42 @@ export default function AddShagunScreen() {
   const [city, setCity] = useState("Surat");
   const [gift1, setGift1] = useState("Gift");
   const [contact, setContact] = useState("+91 99999 99999");
-  const [gift2, setGift2] = useState("Gift");
+  const [wishes, setWishes] = useState("Best wishes");
 
   const handleSave = () => {
+    // Validation
+    if (!name.trim() || !shagunAmount.trim() || !city.trim() || !gift1.trim() || !contact.trim() || !wishes.trim()) {
+      Alert.alert("Error", "All fields are mandatory.");
+      return;
+    }
+
+    // Contact Number Validation (10 digits)
+    const cleanedContact = contact.replace(/\D/g, ""); // Remove non-digits
+    // Allow +91 or just 10 digits. If +91 is there, length might be 12. If just 10, length 10.
+    // User said "mobile number must have 10 digit". I'll assume standard 10 digit Indian mobile.
+    // If user enters +91 9999999999 -> cleaned is 919999999999 (12 digits).
+    // If user enters 9999999999 -> cleaned is 9999999999 (10 digits).
+    // Let's check if the *last* 10 digits are valid, or strictly 10.
+    // Usually "10 digit mobile" validation checks for exactly 10 digits if no country code, or 10 digits after country code.
+    // Simple robust check: extract last 10. But if they type 11 digits?
+    // Let's enforce: Extract all digits. If length < 10, fail. If > 10, ensure it starts with country code? 
+    // Propose: Check if it contains at least 10 digits.
+    // "mobile number must have 10 digit" implies stricter equal to 10.
+    // Let's try: Clean non-digits. If length is 10, good. If length is 12 and starts with 91, good.
+    const digits = cleanedContact.slice(-10);
+    if (cleanedContact.length < 10 || digits.length !== 10) {
+      Alert.alert("Error", "Mobile number must be valid 10 digits.");
+      return;
+    }
+
     addShagun({
-      brideName: name,
-      groomName: "",
+      name: name,
       date: new Date().toISOString(),
       amount: shagunAmount,
+      city: city,
+      contact: contact,
       gift: gift1,
-      wishes: gift2,
+      wishes: wishes,
     });
     router.back();
   };
@@ -119,15 +145,16 @@ export default function AddShagunScreen() {
             />
           </View>
 
-          {/* Gift Field 2 */}
+          {/* Wishes Field */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Gift</Text>
+            <Text style={styles.label}>Wishes/Message</Text>
             <TextInput
               style={styles.input}
-              value={gift2}
-              onChangeText={setGift2}
-              placeholder="Gift"
+              value={wishes}
+              onChangeText={setWishes}
+              placeholder="Best wishes for your marriage!"
               placeholderTextColor="#999"
+              multiline
             />
           </View>
         </ScrollView>

@@ -1,4 +1,6 @@
+import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useOnboarding } from "@/contexts/OnboardingContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -7,6 +9,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const { user, logout } = useAuth();
+  const { resetOnboarding } = useOnboarding();
   const { language, setLanguage, t } = useLanguage();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
 
@@ -14,7 +18,7 @@ export default function ProfileScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>{t("hi_moon")} 👋</Text>
+        <Text style={styles.headerTitle}>Hi, {user?.name || "Guest"} 👋</Text>
       </View>
 
       <ScrollView
@@ -29,12 +33,14 @@ export default function ProfileScreen() {
             style={styles.profileImage}
           />
           <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>Moon</Text>
-            <Text style={styles.profileEmail}>moon@gmail.com</Text>
+            <Text style={styles.profileName}>{user?.name || "Guest"}</Text>
+            <Text style={styles.profileEmail}>{user?.email || "Sign in to save your data"}</Text>
           </View>
-          <TouchableOpacity style={styles.editButton}>
-            <Text style={styles.editButtonText}>{t("edit")}</Text>
-          </TouchableOpacity>
+          {user && (
+            <TouchableOpacity style={styles.editButton}>
+              <Text style={styles.editButtonText}>{t("edit")}</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* Menu Items */}
@@ -92,21 +98,26 @@ export default function ProfileScreen() {
           </TouchableOpacity>
 
           {/* Delete Account */}
-          <TouchableOpacity
-            style={styles.menuItem}
-            onPress={() => router.push("/delete-account")}
-          >
-            <View style={styles.menuItemLeft}>
-              <View style={[styles.iconContainer, { backgroundColor: "#F5F5F5" }]}>
-                <Ionicons name="trash-outline" size={20} color="#000" />
+          {user && (
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => router.push("/delete-account")}
+            >
+              <View style={styles.menuItemLeft}>
+                <View style={[styles.iconContainer, { backgroundColor: "#F5F5F5" }]}>
+                  <Ionicons name="trash-outline" size={20} color="#000" />
+                </View>
+                <Text style={styles.menuItemText}>{t("delete_account")}</Text>
               </View>
-              <Text style={styles.menuItemText}>{t("delete_account")}</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
-          </TouchableOpacity>
+              <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
+            </TouchableOpacity>
+          )}
 
           {/* Contact Us */}
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => router.push("/contact-us")}
+          >
             <View style={styles.menuItemLeft}>
               <View style={[styles.iconContainer, { backgroundColor: "#F5F5F5" }]}>
                 <Ionicons name="mail-outline" size={20} color="#000" />
@@ -127,13 +138,24 @@ export default function ProfileScreen() {
             <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
           </TouchableOpacity>
 
-          {/* Log out */}
-          <TouchableOpacity style={[styles.menuItem, styles.lastMenuItem]}>
+          {/* Log out / Log in */}
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={async () => {
+              if (user) {
+                await logout();
+                await resetOnboarding();
+                router.replace('/');
+              } else {
+                router.push('/login');
+              }
+            }}
+          >
             <View style={styles.menuItemLeft}>
               <View style={[styles.iconContainer, { backgroundColor: "#F5F5F5" }]}>
-                <Ionicons name="log-out-outline" size={20} color="#000" />
+                <Ionicons name={user ? "log-out-outline" : "log-in-outline"} size={20} color="#000" />
               </View>
-              <Text style={styles.menuItemText}>{t("log_out")}</Text>
+              <Text style={styles.menuItemText}>{user ? t("log_out") : "Log In"}</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
           </TouchableOpacity>

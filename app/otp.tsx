@@ -1,9 +1,58 @@
-import { useRouter } from "expo-router";
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useAuth } from "@/contexts/AuthContext";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useState } from "react";
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function OtpScreen() {
   const router = useRouter();
+  const { mobile, name, email, password } = useLocalSearchParams<{ mobile: string, name: string, email: string, password: string }>();
+  const { verifyOtp, register } = useAuth();
+
+  const [otp, setOtp] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleVerify = async () => {
+    if (!otp) {
+      Alert.alert("Error", "Please enter OTP");
+      return;
+    }
+    setLoading(true);
+    try {
+      // mobile comes from params
+      if (!mobile) {
+        throw new Error("Mobile number missing");
+      }
+
+      /* FIREBASE VERIFICATION - COMMENTED OUT
+      const { authService } = require('@/services/authService');
+
+      // 1. Verify OTP with Firebase
+      await authService.confirmCode(otp);
+
+      // 2. Register with Backend (skip backend OTP)
+      // name, email, password are already available from the top-level hook
+      if (!name || !email || !password) {
+        throw new Error("Registration details missing");
+      }
+
+      await register(name, email, mobile, password, true); // true = firebaseVerified
+      */
+
+      // BACKEND VERIFICATION FLOW
+      // Verify OTP with backend (which also logs user in and returns token)
+      await verifyOtp(mobile, otp);
+
+      Alert.alert("Success", "Verified and Registered successfully!");
+      router.replace('/(tabs)');
+    } catch (error: any) {
+      console.error("Verification Error:", error);
+      const errorMessage = error.response?.data?.message || "Invalid or expired OTP";
+      Alert.alert("Verification Failed", errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -18,21 +67,26 @@ export default function OtpScreen() {
 
           <Text style={styles.title}>OTP Verification</Text>
           <Text style={styles.subtitle}>
-            Please check your phone to see the verification code.
+            Please check your phone ({mobile}) to see the verification code.
           </Text>
 
           <View style={styles.otpContainer}>
-            <TextInput style={styles.otpBox} maxLength={1} keyboardType="number-pad" />
-            <TextInput style={styles.otpBox} maxLength={1} keyboardType="number-pad" />
-            <TextInput style={styles.otpBox} maxLength={1} keyboardType="number-pad" />
-            <TextInput style={styles.otpBox} maxLength={1} keyboardType="number-pad" />
+            <TextInput
+              style={styles.otpBox}
+              keyboardType="number-pad"
+              placeholder="Ex: 123456"
+              value={otp}
+              onChangeText={setOtp}
+              maxLength={6}
+            />
           </View>
 
           <TouchableOpacity
-            style={styles.button}
-            onPress={() => router.push("/(tabs)")}
+            style={[styles.button, loading && { opacity: 0.7 }]}
+            onPress={handleVerify}
+            disabled={loading}
           >
-            <Text style={styles.buttonText}>Verify</Text>
+            <Text style={styles.buttonText}>{loading ? "Verifying..." : "Verify"}</Text>
           </TouchableOpacity>
 
           <Text style={styles.resend}>Resend Code In 29 Sec</Text>
@@ -50,14 +104,12 @@ const styles = StyleSheet.create({
   subtitle: { color: "#6F6F6F", fontSize: 16, marginBottom: 30 },
   otpContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
     marginBottom: 40,
     width: "100%",
-    maxWidth: 320, // Constrain width on web/tablets
-    alignSelf: "center", // Center the container
   },
   otpBox: {
-    width: 60,
+    width: 200,
     height: 60,
     borderWidth: 1,
     borderRadius: 12,
@@ -65,6 +117,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 24,
     color: '#000',
+    backgroundColor: '#F9F9F9',
+    letterSpacing: 8,
   },
   button: {
     backgroundColor: "#000",

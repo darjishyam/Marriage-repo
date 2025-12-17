@@ -1,9 +1,10 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 interface OnboardingContextType {
   hasCompletedOnboarding: boolean;
   completeOnboarding: () => Promise<void>;
+  resetOnboarding: () => Promise<void>;
   isLoading: boolean;
 }
 
@@ -40,8 +41,17 @@ export function OnboardingProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const resetOnboarding = async () => {
+    try {
+      await AsyncStorage.removeItem(ONBOARDING_KEY);
+      setHasCompletedOnboarding(false);
+    } catch (error) {
+      console.error("Error resetting onboarding status:", error);
+    }
+  };
+
   return (
-    <OnboardingContext.Provider value={{ hasCompletedOnboarding, completeOnboarding, isLoading }}>
+    <OnboardingContext.Provider value={{ hasCompletedOnboarding, completeOnboarding, resetOnboarding, isLoading }}>
       {children}
     </OnboardingContext.Provider>
   );

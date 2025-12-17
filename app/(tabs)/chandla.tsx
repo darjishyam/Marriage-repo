@@ -1,13 +1,15 @@
 import { RangeSlider } from "@/components/RangeSlider";
+import { useAuth } from "@/contexts/AuthContext";
 import { useShagun } from "@/contexts/ShagunContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
-import { Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function MyChandlaScreen() {
   const router = useRouter();
+  const { user } = useAuth();
   const { shagunEntries } = useShagun();
   const [searchQuery, setSearchQuery] = useState("");
   const [showSortModal, setShowSortModal] = useState(false);
@@ -36,12 +38,10 @@ export default function MyChandlaScreen() {
   const filteredEntries = useMemo(() => {
     let filtered = shagunEntries.filter((entry) => {
       const matchesSearch =
-        entry.brideName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        entry.groomName.toLowerCase().includes(searchQuery.toLowerCase());
+        entry.name.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesName = !sortName ||
-        entry.brideName.toLowerCase().includes(sortName.toLowerCase()) ||
-        entry.groomName.toLowerCase().includes(sortName.toLowerCase());
+        entry.name.toLowerCase().includes(sortName.toLowerCase());
 
       const amount = extractAmount(entry.amount);
       const matchesAmount = amount >= shagunLow && amount <= shagunHigh;
@@ -88,7 +88,20 @@ export default function MyChandlaScreen() {
           <Text style={styles.emptySubtext}>Add your chandla</Text>
           <TouchableOpacity
             style={styles.emptyButton}
-            onPress={() => router.push("/add-shagun")}
+            onPress={() => {
+              if (!user) {
+                if (Platform.OS === 'web') {
+                  if (window.confirm("Login Required\n\nYou need to login to add shagun.")) router.push("/login");
+                } else {
+                  Alert.alert("Login Required", "You need to login to add shagun.", [
+                    { text: "Cancel", style: "cancel" },
+                    { text: "Login", onPress: () => router.push("/login") }
+                  ]);
+                }
+                return;
+              }
+              router.push("/add-shagun");
+            }}
           >
             <Text style={styles.emptyButtonText}>Add Shagun</Text>
           </TouchableOpacity>
@@ -136,7 +149,7 @@ export default function MyChandlaScreen() {
                       <Ionicons name="heart" size={16} color="#000" />
                     </View>
                     <Text style={styles.cardTitle}>
-                      {entry.brideName} {entry.groomName ? `Weds ${entry.groomName}` : ""}
+                      {entry.name}
                     </Text>
                   </View>
                   <TouchableOpacity>
@@ -180,7 +193,20 @@ export default function MyChandlaScreen() {
           {/* Floating Action Button */}
           <TouchableOpacity
             style={styles.fab}
-            onPress={() => router.push("/add-shagun")}
+            onPress={() => {
+              if (!user) {
+                if (Platform.OS === 'web') {
+                  if (window.confirm("Login Required\n\nYou need to login to add shagun.")) router.push("/login");
+                } else {
+                  Alert.alert("Login Required", "You need to login to add shagun.", [
+                    { text: "Cancel", style: "cancel" },
+                    { text: "Login", onPress: () => router.push("/login") }
+                  ]);
+                }
+                return;
+              }
+              router.push("/add-shagun");
+            }}
           >
             <Ionicons name="add" size={30} color="#FFF" />
           </TouchableOpacity>

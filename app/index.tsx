@@ -1,11 +1,13 @@
+import { useAuth } from "@/contexts/AuthContext";
 import { useOnboarding } from "@/contexts/OnboardingContext";
 import { Redirect } from "expo-router";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 export default function Index() {
-  const { hasCompletedOnboarding, isLoading } = useOnboarding();
+  const { user, isLoading: authLoading } = useAuth();
+  const { hasCompletedOnboarding, isLoading: onboardingLoading } = useOnboarding();
 
-  if (isLoading) {
+  if (authLoading || onboardingLoading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#000" />
@@ -13,14 +15,11 @@ export default function Index() {
     );
   }
 
-  // If onboarding is not completed, show onboarding
-  // Forcing onboarding for review purposes
-  // if (!hasCompletedOnboarding) {
-  return <Redirect href="/onboarding" />;
-  // }
+  if (!hasCompletedOnboarding) {
+    return <Redirect href="/onboarding" />;
+  }
 
-  // If onboarding is completed, go to login
-  return <Redirect href="/login" />;
+  return <Redirect href="/(tabs)" />;
 }
 
 const styles = StyleSheet.create({

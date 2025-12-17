@@ -1,5 +1,8 @@
+import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "expo-router";
+import { useState } from "react";
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -13,6 +16,44 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { login } = useAuth();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    // Basic Validation before API call
+    if (!email || !password) {
+      Alert.alert("Error", "Please enter both email and password");
+      return;
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert("Invalid Email", "Please enter a valid email address");
+      return;
+    }
+
+    if (email.toLowerCase().endsWith("@gmail.co")) {
+      Alert.alert("Did you mean @gmail.com?", "It looks like you typed '@gmail.co' instead of '@gmail.com'.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await login(email, password);
+      setLoading(false);
+      router.replace('/(tabs)');
+    } catch (error: any) {
+      if (!error.response) {
+        Alert.alert("Connection Error", "Cannot reach the server. Please check your internet connection.");
+      } else {
+        Alert.alert("Login Failed", error.response?.data?.message || "Invalid credentials");
+      }
+      setLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -32,23 +73,36 @@ export default function LoginScreen() {
           </View>
 
           <Text style={styles.title}>Log In</Text>
-          <Text style={styles.subtitle}>Log in with Phone Number</Text>
+          <Text style={styles.subtitle}>Log in with Email and Password</Text>
 
-          <Text style={styles.label}>Phone Number</Text>
-
+          <Text style={styles.label}>Email Address</Text>
           <TextInput
-            placeholder="+91 99999 99999"
+            placeholder="moon@gmail.com"
             placeholderTextColor="#999"
             style={styles.input}
-            keyboardType="phone-pad"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
+          />
+
+          <Text style={styles.label}>Password</Text>
+          <TextInput
+            placeholder="********"
+            placeholderTextColor="#999"
+            style={styles.input}
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
           />
 
           <TouchableOpacity
             activeOpacity={0.7}
-            style={styles.button}
-            onPress={() => router.push("/otp")}
+            style={[styles.button, loading && { opacity: 0.7 }]}
+            onPress={handleLogin}
+            disabled={loading}
           >
-            <Text style={styles.buttonText}>Send OTP</Text>
+            <Text style={styles.buttonText}>{loading ? "Logging in..." : "Log In"}</Text>
           </TouchableOpacity>
 
           <Text style={styles.bottomText}>

@@ -1,6 +1,10 @@
+import { useAuth } from "@/contexts/AuthContext";
+import { authService } from "@/services/authService";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useState } from "react";
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   Image as RNImage,
@@ -15,6 +19,107 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SignUpScreen() {
   const router = useRouter();
+  const { register } = useAuth();
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Helper for cross-platform alerts
+  const showAlert = (title: string, message: string) => {
+    if (Platform.OS === 'web') {
+      window.alert(`${title}: ${message}`);
+    } else {
+      Alert.alert(title, message);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      setLoading(true);
+      const googleUser = await authService.signInWithGoogle();
+      if (googleUser) {
+        if (googleUser.displayName) setName(googleUser.displayName);
+        if (googleUser.email) setEmail(googleUser.email);
+        setPassword("GoogleAuth123!"); // Dummy password for backend requirement
+
+        // Auto-verify if possible, or just prompt for mobile
+        showAlert("Google Sign-In Successful", "Please enter your mobile number to complete registration.");
+      }
+    } catch (error: any) {
+      console.error("Google Login Error:", error);
+      showAlert("Google Login Failed", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignup = async () => {
+    if (!name || !email || !mobile || !password) {
+      showAlert("Error", "Please fill in all fields");
+      return;
+    }
+
+    // Name Validation: Alphabets and spaces only
+    const nameRegex = /^[a-zA-Z\s]+$/;
+    if (!nameRegex.test(name)) {
+      showAlert("Invalid Name", "Name must contain only alphabets");
+      return;
+    }
+
+    // Email Validation: Stricter format check
+    // Requires at least 2 characters for TLD (e.g., .com, .in, .co)
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      showAlert("Invalid Email", "Please enter a valid email address");
+      return;
+    }
+
+    // Smart Check for common typos
+    if (email.toLowerCase().endsWith("@gmail.co")) {
+      showAlert("Did you mean @gmail.com?", "It looks like you typed '@gmail.co' instead of '@gmail.com'.");
+      return;
+    }
+
+    // Mobile Validation: Exactly 10 digits
+    const mobileRegex = /^\d{10}$/;
+    if (!mobileRegex.test(mobile)) {
+      showAlert("Invalid Mobile", "Mobile number must be exactly 10 digits");
+      return;
+    }
+
+    // Password Validation: Min 8 chars, 1 letter, 1 number, 1 special char
+    const trimmedPassword = password.trim();
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+    console.log("DEBUG: Validation checking password:", trimmedPassword, "length:", trimmedPassword.length, "result:", passwordRegex.test(trimmedPassword));
+
+    if (!passwordRegex.test(trimmedPassword)) {
+      showAlert("Weak Password", "Password must be at least 8 characters long and include a letter, a number, and a special character.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // BACKEND OTP FLOW
+      console.log("BACKEND FLOW ACTIVE: Attempting signup with:", { name, email, mobile });
+      await register(name, email, mobile, password); // Calls backend /auth/signup (generates OTP)
+
+      // Navigate to OTP screen
+      router.push({
+        pathname: "/otp",
+        params: { name, email, mobile, password }
+      });
+
+    } catch (error: any) {
+      console.error("Signup Error Details:", error);
+      const errorMessage = error.response?.data?.message || error.message || "Something went wrong";
+      showAlert("Signup Failed", errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -39,21 +144,48 @@ export default function SignUpScreen() {
 
           {/* Inputs */}
           <Text style={styles.label}>Name</Text>
-          <TextInput placeholder="moon" style={styles.input} />
+          <TextInput
+            placeholder="Moon"
+            style={styles.input}
+            value={name}
+            onChangeText={setName}
+          />
 
           <Text style={styles.label}>Email Address</Text>
-          <TextInput placeholder="moon@gmail.com" style={styles.input} />
+          <TextInput
+            placeholder="moon@gmail.com"
+            style={styles.input}
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            keyboardType="email-address"
+          />
 
           <Text style={styles.label}>Phone Number</Text>
           <TextInput
-            placeholder="+91 99999 99999"
+            placeholder="9999999999"
             style={styles.input}
             keyboardType="phone-pad"
+            value={mobile}
+            onChangeText={setMobile}
+          />
+
+          <Text style={styles.label}>Password</Text>
+          <TextInput
+            placeholder="********"
+            style={styles.input}
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
           />
 
           {/* Sign Up Button */}
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Sign Up</Text>
+          <TouchableOpacity
+            style={[styles.button, loading && { opacity: 0.7 }]}
+            onPress={handleSignup}
+            disabled={loading}
+          >
+            <Text style={styles.buttonText}>{loading ? "Signing Up..." : "Sign Up"}</Text>
           </TouchableOpacity>
 
           {/* Divider */}
@@ -66,7 +198,7 @@ export default function SignUpScreen() {
           </TouchableOpacity>
 
           {/* Google */}
-          <TouchableOpacity style={styles.socialButton}>
+          <TouchableOpacity style={styles.socialButton} onPress={handleGoogleLogin}>
             <RNImage
               source={require("../assets/images/Google.png")}
               style={{ width: 22, height: 22, marginRight: 10, resizeMode: 'contain' }}
@@ -161,6 +293,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 16,
     backgroundColor: "#F9F9F9", // Slight bg for inputs
+    color: "#000", // Ensure text is visible
   },
   button: {
     backgroundColor: "#000",

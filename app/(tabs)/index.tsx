@@ -1,14 +1,22 @@
+import { useAuth } from "@/contexts/AuthContext";
+import { useExpense } from "@/contexts/ExpenseContext";
+import { useGuest } from "@/contexts/GuestContext";
+import { useShagun } from "@/contexts/ShagunContext";
 import { useWedding } from "@/contexts/WeddingContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import { Alert, Dimensions, Image, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export default function MyWeddingScreen() {
   const router = useRouter();
-  const { hasWedding, weddingData } = useWedding();
+  const { user } = useAuth();
+  const { hasWedding, weddingData, weddings, switchWedding, createWedding } = useWedding();
+  const [showSwitchModal, setShowSwitchModal] = useState(false);
+  // removed useGuest from here
 
   if (!hasWedding || !weddingData) {
     return (
@@ -35,7 +43,27 @@ export default function MyWeddingScreen() {
           {/* Button */}
           <TouchableOpacity
             style={styles.button}
-            onPress={() => router.push("/create-wedding")}
+            onPress={() => {
+              if (!user) {
+                if (Platform.OS === 'web') {
+                  const choice = window.confirm("Login Required\n\nYou need to login to create a wedding.");
+                  if (choice) {
+                    router.push("/login");
+                  }
+                } else {
+                  Alert.alert(
+                    "Login Required",
+                    "You need to login to create a wedding.",
+                    [
+                      { text: "Cancel", style: "cancel" },
+                      { text: "Login", onPress: () => router.push("/login") }
+                    ]
+                  );
+                }
+                return;
+              }
+              router.push("/create-wedding");
+            }}
           >
             <Text style={styles.buttonText}>Create Wedding</Text>
           </TouchableOpacity>
@@ -44,11 +72,99 @@ export default function MyWeddingScreen() {
     );
   }
 
-  return <WeddingDashboard weddingData={weddingData} />;
+  return (
+    <>
+      <WeddingDashboard
+        weddingData={weddingData}
+        onSwitch={() => setShowSwitchModal(true)}
+      />
+
+      {/* Switch Wedding Modal */}
+      <Modal
+        visible={showSwitchModal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowSwitchModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <TouchableOpacity
+            style={styles.modalBackdrop}
+            activeOpacity={1}
+            onPress={() => setShowSwitchModal(false)}
+          />
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Switch Wedding</Text>
+              <TouchableOpacity onPress={() => setShowSwitchModal(false)}>
+                <Ionicons name="close" size={24} color="#000" />
+              </TouchableOpacity>
+            </View>
+
+            {/* List of Weddings */}
+            <ScrollView style={styles.weddingList} contentContainerStyle={{ paddingBottom: 20 }}>
+              {weddings.map((w: any) => (
+                <TouchableOpacity
+                  key={w._id}
+                  style={[
+                    styles.weddingItem,
+                    weddingData?._id === w._id && styles.weddingItemSelected
+                  ]}
+                  onPress={() => {
+                    switchWedding(w._id);
+                    setShowSwitchModal(false);
+                  }}
+                >
+                  <View style={styles.weddingInfo}>
+                    <Text style={[styles.weddingName, weddingData?._id === w._id && styles.selectedText]}>
+                      {w.brideName} & {w.groomName}
+                    </Text>
+                    <Text style={styles.weddingDate}>
+                      {new Date(w.date).toLocaleDateString()}
+                    </Text>
+                  </View>
+                  {weddingData?._id === w._id && (
+                    <Ionicons name="checkmark-circle" size={24} color="#000" />
+                  )}
+                </TouchableOpacity>
+              ))}
+
+              {/* Create New Button */}
+              <TouchableOpacity
+                style={styles.createNewButton}
+                onPress={() => {
+                  setShowSwitchModal(false);
+                  router.push("/create-wedding");
+                }}
+              >
+                <View style={styles.createNewIcon}>
+                  <Ionicons name="add" size={20} color="#FFF" />
+                </View>
+                <Text style={styles.createNewText}>Create New Wedding</Text>
+              </TouchableOpacity>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+    </>
+  );
 }
 
-function WeddingDashboard({ weddingData }: { weddingData: { groomName: string; brideName: string; date: Date } }) {
+
+
+function WeddingDashboard({ weddingData, onSwitch }: { weddingData: { groomName: string; brideName: string; date: Date, totalBudget: number, startStatistics?: { guestCount: number, totalSpent: number }, _id?: string }, onSwitch: () => void }) {
   const router = useRouter();
+  const { guests } = useGuest();
+  const { totalAmount } = useExpense();
+  const { updateBudget } = useWedding();
+  const { shagunEntries } = useShagun();
+
+  const totalChandlo = shagunEntries.reduce((sum, entry) => {
+    const val = parseInt(entry.amount.replace(/[₹,\s]/g, "")) || 0;
+    return sum + val;
+  }, 0);
+
+  const [showBudgetModal, setShowBudgetModal] = useState(false);
+  const [budgetInput, setBudgetInput] = useState(weddingData.totalBudget?.toString() || "0");
 
   const formatDate = (date: Date) => {
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -56,6 +172,18 @@ function WeddingDashboard({ weddingData }: { weddingData: { groomName: string; b
     const month = months[date.getMonth()];
     const year = date.getFullYear();
     return `${day} ${month}, ${year}`;
+  };
+
+  const totalSpent = totalAmount || weddingData.startStatistics?.totalSpent || 0;
+  const totalBudget = weddingData.totalBudget || 0;
+  const remainingBudget = totalBudget - totalSpent;
+
+  const handleSaveBudget = async () => {
+    const val = parseFloat(budgetInput);
+    if (!isNaN(val)) {
+      await updateBudget(val);
+    }
+    setShowBudgetModal(false);
   };
 
   return (
@@ -89,7 +217,7 @@ function WeddingDashboard({ weddingData }: { weddingData: { groomName: string; b
             <Text style={styles.eventDate}>{formatDate(weddingData.date)}</Text>
           </View>
 
-          <TouchableOpacity style={styles.dropdownButton}>
+          <TouchableOpacity style={styles.dropdownButton} onPress={onSwitch}>
             <Ionicons name="chevron-down" size={24} color="#000" />
           </TouchableOpacity>
         </View>
@@ -117,12 +245,12 @@ function WeddingDashboard({ weddingData }: { weddingData: { groomName: string; b
             <View style={[styles.statBox, styles.shagunStatBox]}>
               <Ionicons name="person-outline" size={20} color="#000" style={styles.statIcon} />
               <Text style={styles.statLabel}>People</Text>
-              <Text style={styles.statValue}>20</Text>
+              <Text style={styles.statValue}>{shagunEntries.length}</Text>
             </View>
             <View style={[styles.statBox, styles.shagunStatBox]}>
               <Ionicons name="cash-outline" size={20} color="#000" style={styles.statIcon} />
               <Text style={styles.statLabel}>Total Chandlo</Text>
-              <Text style={styles.statValue}>₹ 2,000</Text>
+              <Text style={styles.statValue}>₹ {totalChandlo.toLocaleString()}</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -130,7 +258,25 @@ function WeddingDashboard({ weddingData }: { weddingData: { groomName: string; b
         {/* Expense Card */}
         <TouchableOpacity
           style={[styles.card, styles.expenseCard]}
-          onPress={() => router.push("/expenses")}
+          onPress={() => {
+            if (totalBudget > 0) {
+              router.push("/expenses");
+            } else {
+              Alert.alert(
+                "Budget Required",
+                "Please set a total budget before managing expenses.",
+                [
+                  { text: "Cancel", style: "cancel" },
+                  {
+                    text: "Set Budget", onPress: () => {
+                      setBudgetInput("0");
+                      setShowBudgetModal(true);
+                    }
+                  }
+                ]
+              );
+            }
+          }}
           activeOpacity={0.9}
         >
           <View style={styles.cardHeader}>
@@ -138,17 +284,21 @@ function WeddingDashboard({ weddingData }: { weddingData: { groomName: string; b
               <Ionicons name="wallet" size={18} color="#000" />
             </View>
             <Text style={styles.cardTitle}>Expense</Text>
+            {/* Edit Budget Icon */}
+            <TouchableOpacity onPress={() => { setBudgetInput(totalBudget.toString()); setShowBudgetModal(true); }} style={{ marginLeft: 'auto', padding: 4 }}>
+              <Ionicons name="pencil" size={18} color="#000" />
+            </TouchableOpacity>
           </View>
           <View style={styles.cardInternalRow}>
             <View style={[styles.statBox, styles.expenseStatBox]}>
               <Ionicons name="cash-outline" size={20} color="#000" style={styles.statIcon} />
-              <Text style={styles.statLabel}>Total Budget</Text>
-              <Text style={styles.statValue}>20</Text>
+              <Text style={styles.statLabel}>Remaining</Text>
+              <Text style={styles.statValue}>₹ {remainingBudget.toLocaleString()}</Text>
             </View>
             <View style={[styles.statBox, styles.expenseStatBox]}>
               <Ionicons name="refresh-outline" size={20} color="#000" style={styles.statIcon} />
               <Text style={styles.statLabel}>Spent</Text>
-              <Text style={styles.statValue}>₹ 2,000</Text>
+              <Text style={styles.statValue}>₹ {totalSpent.toLocaleString()}</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -169,16 +319,52 @@ function WeddingDashboard({ weddingData }: { weddingData: { groomName: string; b
             <View style={[styles.statBox, styles.invitationStatBox]}>
               <Ionicons name="send-outline" size={20} color="#000" style={styles.statIcon} />
               <Text style={styles.statLabel}>Invitation Sent</Text>
-              <Text style={styles.statValue}>20</Text>
+              <Text style={styles.statValue}>{guests.length}</Text>
             </View>
             <View style={[styles.statBox, styles.invitationStatBox]}>
               <Ionicons name="people-outline" size={20} color="#000" style={styles.statIcon} />
               <Text style={styles.statLabel}>Total Guest</Text>
-              <Text style={styles.statValue}>₹ 2,000</Text>
+              <Text style={styles.statValue}>{guests.reduce((sum, guest) => sum + (guest.familyCount || 1), 0)}</Text>
             </View>
           </View>
         </TouchableOpacity>
       </ScrollView>
+
+      {/* Budget Modal */}
+      <Modal
+        visible={showBudgetModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowBudgetModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { padding: 20 }]}>
+            <Text style={[styles.modalTitle, { marginBottom: 15 }]}>Set Total Budget</Text>
+            <TextInput
+              value={budgetInput}
+              onChangeText={setBudgetInput}
+              keyboardType="numeric"
+              style={{
+                borderWidth: 1, borderColor: '#DDD', borderRadius: 8,
+                padding: 12, fontSize: 18, marginBottom: 20
+              }}
+              placeholder="Enter Budget Amount"
+            />
+            <TouchableOpacity
+              onPress={handleSaveBudget}
+              style={{ backgroundColor: '#000', padding: 15, borderRadius: 10, alignItems: 'center' }}
+            >
+              <Text style={{ color: '#FFF', fontWeight: 'bold' }}>Save Budget</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setShowBudgetModal(false)}
+              style={{ marginTop: 15, alignItems: 'center' }}
+            >
+              <Text style={{ color: '#666' }}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -383,6 +569,96 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 18,
     fontWeight: "700",
+    color: "#000",
+  },
+  // Modal Styles
+  modalOverlay: {
+    flex: 1,
+    justifyContent: Platform.OS === "web" ? "center" : "flex-end",
+    alignItems: Platform.OS === "web" ? "center" : undefined,
+  },
+  modalBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderBottomLeftRadius: Platform.OS === "web" ? 20 : 0,
+    borderBottomRightRadius: Platform.OS === "web" ? 20 : 0,
+    width: Platform.OS === "web" ? "90%" : "100%",
+    maxWidth: Platform.OS === "web" ? 400 : undefined,
+    paddingBottom: Platform.OS === "ios" ? 34 : 20,
+    maxHeight: "60%",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0F0F0",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#000",
+  },
+  weddingList: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
+  },
+  weddingItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0F0F0",
+  },
+  weddingItemSelected: {
+    backgroundColor: "#FAFAFA",
+    marginHorizontal: -20,
+    paddingHorizontal: 20,
+  },
+  weddingInfo: {
+    flex: 1,
+  },
+  weddingName: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#000",
+    marginBottom: 2,
+  },
+  selectedText: {
+    color: "#8A0030",
+    fontWeight: "700",
+  },
+  weddingDate: {
+    fontSize: 13,
+    color: "#888",
+  },
+  createNewButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 20,
+    paddingVertical: 12,
+  },
+  createNewIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  createNewText: {
+    fontSize: 16,
+    fontWeight: "600",
     color: "#000",
   },
 });

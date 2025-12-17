@@ -21,7 +21,7 @@ export default function CreateWeddingScreen() {
   const { setWeddingData } = useWedding();
   const [groomName, setGroomName] = useState("");
   const [brideName, setBrideName] = useState("");
-  const [marriageDate, setMarriageDate] = useState(new Date(2025, 1, 14)); // 14-02-2025
+  const [marriageDate, setMarriageDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const formatDate = (date: Date) => {
@@ -40,16 +40,26 @@ export default function CreateWeddingScreen() {
     setShowDatePicker(false);
   };
 
-  const handleSave = () => {
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSave = async () => {
     if (groomName.trim() && brideName.trim()) {
-      // Save wedding data to context
-      setWeddingData({
-        groomName: groomName.trim(),
-        brideName: brideName.trim(),
-        date: marriageDate,
-      });
-      // Navigate back to My Wedding tab
-      router.replace("/(tabs)");
+      setIsSaving(true);
+      try {
+        await setWeddingData({
+          groomName: groomName.trim(),
+          brideName: brideName.trim(),
+          date: marriageDate,
+        });
+        // Navigate back to My Wedding tab
+        router.replace("/(tabs)");
+      } catch (error: any) {
+        console.error("Create wedding error full object:", error);
+        const errorMessage = error.response?.data?.message || error.message || "Unknown error";
+        alert(`Failed to create wedding: ${errorMessage}`);
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
 
@@ -116,8 +126,12 @@ export default function CreateWeddingScreen() {
 
         {/* Save Button */}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-            <Text style={styles.saveButtonText}>Save</Text>
+          <TouchableOpacity
+            style={[styles.saveButton, isSaving && { opacity: 0.7 }]}
+            onPress={handleSave}
+            disabled={isSaving}
+          >
+            <Text style={styles.saveButtonText}>{isSaving ? "Saving..." : "Save"}</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
