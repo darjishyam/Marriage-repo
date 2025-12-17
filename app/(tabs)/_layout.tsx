@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { Platform } from "react-native";
+import { Platform, Image as RNImage } from "react-native";
 
 export default function TabLayout() {
   return (
@@ -43,7 +43,11 @@ export default function TabLayout() {
         options={{
           title: "My Shagun",
           tabBarIcon: ({ color }) => (
-            <Ionicons name="wallet" size={24} color={color} />
+            <RNImage
+              source={require("@/assets/images/wallet.png")}
+              style={{ width: 24, height: 24, tintColor: color }}
+              resizeMode="contain"
+            />
           ),
         }}
       />

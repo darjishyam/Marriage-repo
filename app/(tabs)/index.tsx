@@ -243,12 +243,12 @@ function WeddingDashboard({ weddingData, onSwitch }: { weddingData: { groomName:
           </View>
           <View style={styles.cardInternalRow}>
             <View style={[styles.statBox, styles.shagunStatBox]}>
-              <Ionicons name="person-outline" size={20} color="#000" style={styles.statIcon} />
+              <Ionicons name="person" size={24} color="#000" style={styles.statIcon} />
               <Text style={styles.statLabel}>People</Text>
               <Text style={styles.statValue}>{shagunEntries.length}</Text>
             </View>
             <View style={[styles.statBox, styles.shagunStatBox]}>
-              <Ionicons name="cash-outline" size={20} color="#000" style={styles.statIcon} />
+              <Ionicons name="cash" size={24} color="#000" style={styles.statIcon} />
               <Text style={styles.statLabel}>Total Chandlo</Text>
               <Text style={styles.statValue}>₹ {totalChandlo.toLocaleString()}</Text>
             </View>
@@ -296,7 +296,7 @@ function WeddingDashboard({ weddingData, onSwitch }: { weddingData: { groomName:
               <Text style={styles.statValue}>₹ {remainingBudget.toLocaleString()}</Text>
             </View>
             <View style={[styles.statBox, styles.expenseStatBox]}>
-              <Ionicons name="refresh-outline" size={20} color="#000" style={styles.statIcon} />
+              <Image source={require("../../assets/images/money-send.png")} style={{ width: 48, height: 48, marginBottom: 8, resizeMode: "contain", tintColor: "#000" }} />
               <Text style={styles.statLabel}>Spent</Text>
               <Text style={styles.statValue}>₹ {totalSpent.toLocaleString()}</Text>
             </View>
@@ -317,12 +317,12 @@ function WeddingDashboard({ weddingData, onSwitch }: { weddingData: { groomName:
           </View>
           <View style={styles.cardInternalRow}>
             <View style={[styles.statBox, styles.invitationStatBox]}>
-              <Ionicons name="send-outline" size={20} color="#000" style={styles.statIcon} />
+              <Image source={require("../../assets/images/direct-send.png")} style={{ width: 48, height: 48, marginBottom: 8, resizeMode: "contain", tintColor: "#000" }} />
               <Text style={styles.statLabel}>Invitation Sent</Text>
               <Text style={styles.statValue}>{guests.length}</Text>
             </View>
             <View style={[styles.statBox, styles.invitationStatBox]}>
-              <Ionicons name="people-outline" size={20} color="#000" style={styles.statIcon} />
+              <Image source={require("../../assets/images/empty_guest.png")} style={{ width: 48, height: 48, marginBottom: 8, resizeMode: "contain", tintColor: "#000" }} />
               <Text style={styles.statLabel}>Total Guest</Text>
               <Text style={styles.statValue}>{guests.reduce((sum, guest) => sum + (guest.familyCount || 1), 0)}</Text>
             </View>
