@@ -22,6 +22,11 @@ export function OnboardingProvider({ children }: { children: ReactNode }) {
 
   const checkOnboardingStatus = async () => {
     try {
+      // TEMP: Reset onboarding for dev visualization as requested
+      // await AsyncStorage.removeItem(ONBOARDING_KEY);
+      // To force it every time, uncomment above or just use this:
+      await AsyncStorage.removeItem(ONBOARDING_KEY);
+
       const value = await AsyncStorage.getItem(ONBOARDING_KEY);
       setHasCompletedOnboarding(value === "true");
     } catch (error) {
@@ -35,7 +40,10 @@ export function OnboardingProvider({ children }: { children: ReactNode }) {
   const completeOnboarding = async () => {
     try {
       await AsyncStorage.setItem(ONBOARDING_KEY, "true");
-      setHasCompletedOnboarding(true);
+      // Do NOT set state here. This prevents app/index.tsx from reacting
+      // and redirecting to /(tabs) while we are trying to navigate naturally
+      // to Login, keeping the history stack intact for the Back button.
+      // The state will be updated on next app load via checkOnboardingStatus.
     } catch (error) {
       console.error("Error saving onboarding status:", error);
     }

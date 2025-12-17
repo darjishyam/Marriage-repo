@@ -42,8 +42,8 @@ export default function OnboardingScreen() {
     {
       id: "3",
       image: require("../../assets/images/screen3.jpg"),
-      title: "Secure & easy record management",
-      description: "Keep your wedding records safe and accessible anytime with digital management tools.",
+      title: "Manage your guest list invitations",
+      description: "Invite, track, and manage with ease your ultimate tool for seamless guest list and invitation management!",
       backgroundColor: "#DFF1FF",
       archRadius: width * 0.6,
     },
@@ -51,7 +51,7 @@ export default function OnboardingScreen() {
 
   const handleComplete = async () => {
     await completeOnboarding();
-    router.replace("/login");
+    router.push("/login");
   };
 
   const handleNext = () => {
@@ -189,15 +189,17 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: "700",
-    marginTop: 25,
+    marginTop: 50, // Increased spacing as requested
     lineHeight: 40,
     color: "#000",
+    textAlign: "center",
   },
   description: {
     marginTop: 15,
     fontSize: 17,
     color: "#444",
     lineHeight: 26,
+    textAlign: "center",
   },
   bottomRow: {
     position: "absolute",

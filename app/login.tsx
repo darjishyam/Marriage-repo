@@ -67,7 +67,17 @@ export default function LoginScreen() {
         >
           {/* Back Arrow */}
           <View style={styles.header}>
-            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <TouchableOpacity
+              onPress={() => {
+                if (router.canGoBack()) {
+                  router.back();
+                } else {
+                  // Fallback for web if no history, or if landed directly on login
+                  router.replace("/onboarding");
+                }
+              }}
+              style={styles.backButton}
+            >
               <Text style={styles.backArrow}>←</Text>
             </TouchableOpacity>
           </View>
