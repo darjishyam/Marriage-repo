@@ -1,3 +1,4 @@
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useOnboarding } from "@/contexts/OnboardingContext";
 import { useRouter } from "expo-router";
 import { useCallback, useRef, useState } from "react";
@@ -20,30 +21,32 @@ export default function OnboardingScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { width: screenWidth, height } = useWindowDimensions();
   const width = Math.min(screenWidth, 500);
+
   const insets = useSafeAreaInsets();
+  const { t } = useLanguage();
 
   const DATA = [
     {
       id: "1",
       image: require("../../assets/images/screen1.jpg"),
-      title: "Say goodbye to physical chandla book",
-      description: "Hey there! Now you don't have to worry about losing your marriage chandla book.",
+      title: t("onboarding_title_1"),
+      description: t("onboarding_desc_1"),
       backgroundColor: "#FADADD",
       archRadius: width * 0.65,
     },
     {
       id: "2",
       image: require("../../assets/images/screen2.jpg"),
-      title: "Manage your guest list invitations",
-      description: "Invite, track, and manage with ease your ultimate tool for seamless guest list and invitation management!",
+      title: t("onboarding_title_2"),
+      description: t("onboarding_desc_2"),
       backgroundColor: "#FCE9B0",
       archRadius: width * 0.6,
     },
     {
       id: "3",
       image: require("../../assets/images/screen3.jpg"),
-      title: "Manage your guest list invitations",
-      description: "Invite, track, and manage with ease your ultimate tool for seamless guest list and invitation management!",
+      title: t("onboarding_title_3"),
+      description: t("onboarding_desc_3"),
       backgroundColor: "#DFF1FF",
       archRadius: width * 0.6,
     },
@@ -130,7 +133,7 @@ export default function OnboardingScreen() {
         style={[styles.skipContainer, { top: insets.top + 20 }]}
         onPress={handleComplete}
       >
-        <Text style={styles.skipText}>Skip</Text>
+        <Text style={styles.skipText}>{t("skip")}</Text>
       </TouchableOpacity>
 
       {/* Bottom Controls Overlay */}

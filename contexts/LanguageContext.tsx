@@ -6,7 +6,13 @@ interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: (key: string) => string;
+  convertNumerals: (value: string | number) => string;
 }
+
+const gujaratiNumerals: { [key: string]: string } = {
+  "0": "૦", "1": "૧", "2": "૨", "3": "૩", "4": "૪",
+  "5": "૫", "6": "૬", "7": "૭", "8": "૮", "9": "૯"
+};
 
 const translations = {
   English: {
@@ -74,7 +80,9 @@ const translations = {
     "gift": "Gift",
     "contact_number": "Contact Number",
     "wishes_message": "Wishes/Message",
+    "wishes": "Wishes",
     "save_and_add_another": "Save And Add Another",
+    "happy_marriage_life": "Happy Marriage Life",
     "error": "Error",
     "success": "Success",
     "all_fields_mandatory": "All fields are mandatory.",
@@ -177,6 +185,15 @@ const translations = {
     "terms_8_text": "Shagun may revise these terms of service at any time without notice.",
     "terms_9_title": "9. Contact Information",
     "terms_9_text": "If you have any questions about these Terms of Service, please contact us.",
+
+    // Onboarding
+    "onboarding_title_1": "Say goodbye to physical chandla book",
+    "onboarding_desc_1": "Hey there! Now you don't have to worry about losing your marriage chandla book.",
+    "onboarding_title_2": "Manage your guest list invitations",
+    "onboarding_desc_2": "Invite, track, and manage with ease your ultimate tool for seamless guest list and invitation management!",
+    "onboarding_title_3": "Manage your guest list invitations",
+    "onboarding_desc_3": "Invite, track, and manage with ease your ultimate tool for seamless guest list and invitation management!",
+    "skip": "Skip",
   },
   Gujrati: {
     // Profile
@@ -243,7 +260,9 @@ const translations = {
     "gift": "ભેટ",
     "contact_number": "સંપર્ક નંબર",
     "wishes_message": "શુભેચ્છાઓ/સંદેશ",
+    "wishes": "શુભેચ્છાઓ",
     "save_and_add_another": "સાચવો અને બીજું ઉમેરો",
+    "happy_marriage_life": "લગ્ન જીવનની શુભકામનાઓ",
     "error": "ભૂલ",
     "success": "સફળતા",
     "all_fields_mandatory": "બધા ક્ષેત્રો ફરજિયાત છે.",
@@ -346,6 +365,15 @@ const translations = {
     "terms_8_text": "શગુન કોઈપણ સમયે સૂચના આપ્યા વિના આ સેવાની શરતોમાં સુધારો કરી શકે છે.",
     "terms_9_title": "9. સંપર્ક માહિતી",
     "terms_9_text": "જો તમને આ સેવાની શરતો વિશે કોઈ પ્રશ્નો હોય, તો કૃપા કરીને અમારો સંપર્ક કરો.",
+
+    // Onboarding
+    "onboarding_title_1": "ભૌતિક ચાંદલા બુકને કહો અલવિદા",
+    "onboarding_desc_1": "હેય! હવે તમારે તમારી લગ્નની ચાંદલા બુક ખોવાઈ જવાની ચિંતા કરવાની જરૂર નથી.",
+    "onboarding_title_2": "તમારા મહેમાનોની યાદી આમંત્રણો મેનેજ કરો",
+    "onboarding_desc_2": "સરળતા સાથે આમંત્રિત કરો, ટ્રૅક કરો અને સંચાલિત કરો - સીમલેસ મહેમાન યાદી અને આમંત્રણ સંચાલન માટેનું તમારું અંતિમ સાધન!",
+    "onboarding_title_3": "તમારા મહેમાનોની યાદી આમંત્રણો મેનેજ કરો",
+    "onboarding_desc_3": "સરળતા સાથે આમંત્રિત કરો, ટ્રૅક કરો અને સંચાલિત કરો - સીમલેસ મહેમાન યાદી અને આમંત્રણ સંચાલન માટેનું અંતિમ સાધન!",
+    "skip": "છોડો",
   },
 };
 
@@ -358,8 +386,14 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     return translations[language][key as keyof typeof translations.English] || key;
   };
 
+  const convertNumerals = (value: string | number): string => {
+    const str = value.toString();
+    if (language !== "Gujrati") return str;
+    return str.replace(/[0-9]/g, (d) => gujaratiNumerals[d]);
+  };
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t, convertNumerals }}>
       {children}
     </LanguageContext.Provider>
   );

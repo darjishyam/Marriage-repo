@@ -12,7 +12,7 @@ export default function MyChandlaScreen() {
   const router = useRouter();
   const { user } = useAuth();
   const { shagunEntries } = useShagun();
-  const { t } = useLanguage();
+  const { t, convertNumerals } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
   const [showSortModal, setShowSortModal] = useState(false);
   const [sortName, setSortName] = useState("");
@@ -165,9 +165,9 @@ export default function MyChandlaScreen() {
                   <View style={styles.statBox}>
                     <View style={styles.statLabelRow}>
                       <Ionicons name="calendar-outline" size={16} color="#000" />
-                      <Text style={styles.statLabel}>Marriage Date</Text>
+                      <Text style={styles.statLabel}>{t("marriage_date")}</Text>
                     </View>
-                    <Text style={styles.statValue}>{formatDate(entry.date)}</Text>
+                    <Text style={styles.statValue}>{convertNumerals(formatDate(entry.date))}</Text>
                   </View>
 
                   {/* Total Chandlo */}
@@ -182,8 +182,8 @@ export default function MyChandlaScreen() {
 
                 {/* Wishes Box */}
                 <View style={styles.wishesBox}>
-                  <Text style={styles.wishesLabel}>Wishes</Text>
-                  <Text style={styles.wishesValue}>{entry.wishes || "happy marriage life"}</Text>
+                  <Text style={styles.wishesLabel}>{t("wishes")}</Text>
+                  <Text style={styles.wishesValue}>{entry.wishes || t("happy_marriage_life")}</Text>
                 </View>
               </View>
             ))}

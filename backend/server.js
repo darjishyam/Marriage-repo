@@ -32,6 +32,11 @@ app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
+// API Root Route
+app.get('/api', (req, res) => {
+    res.json({ message: "Shagun API is running", version: "1.0.0" });
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

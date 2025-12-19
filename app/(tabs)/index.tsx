@@ -7,7 +7,7 @@ import { useWedding } from "@/contexts/WeddingContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, Dimensions, Image, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Dimensions, Image, KeyboardAvoidingView, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -340,33 +340,38 @@ function WeddingDashboard({ weddingData, onSwitch }: { weddingData: { groomName:
         animationType="fade"
         onRequestClose={() => setShowBudgetModal(false)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { padding: 20 }]}>
-            <Text style={[styles.modalTitle, { marginBottom: 15 }]}>{t("set_budget")}</Text>
-            <TextInput
-              value={budgetInput}
-              onChangeText={setBudgetInput}
-              keyboardType="numeric"
-              style={{
-                borderWidth: 1, borderColor: '#DDD', borderRadius: 8,
-                padding: 12, fontSize: 18, marginBottom: 20
-              }}
-              placeholder={t("enter_budget_amount")}
-            />
-            <TouchableOpacity
-              onPress={handleSaveBudget}
-              style={{ backgroundColor: '#000', padding: 15, borderRadius: 10, alignItems: 'center' }}
-            >
-              <Text style={{ color: '#FFF', fontWeight: 'bold' }}>{t("save_budget")}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setShowBudgetModal(false)}
-              style={{ marginTop: 15, alignItems: 'center' }}
-            >
-              <Text style={{ color: '#666' }}>{t("cancel")}</Text>
-            </TouchableOpacity>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flex: 1 }}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={[styles.modalContent, { padding: 20 }]}>
+              <Text style={[styles.modalTitle, { marginBottom: 15 }]}>{t("set_budget")}</Text>
+              <TextInput
+                value={budgetInput}
+                onChangeText={setBudgetInput}
+                keyboardType="numeric"
+                style={{
+                  borderWidth: 1, borderColor: '#DDD', borderRadius: 8,
+                  padding: 12, fontSize: 18, marginBottom: 20
+                }}
+                placeholder={t("enter_budget_amount")}
+              />
+              <TouchableOpacity
+                onPress={handleSaveBudget}
+                style={{ backgroundColor: '#000', padding: 15, borderRadius: 10, alignItems: 'center' }}
+              >
+                <Text style={{ color: '#FFF', fontWeight: 'bold' }}>{t("save_budget")}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setShowBudgetModal(false)}
+                style={{ marginTop: 15, alignItems: 'center' }}
+              >
+                <Text style={{ color: '#666' }}>{t("cancel")}</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
   );
