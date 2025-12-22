@@ -150,7 +150,7 @@ const translations = {
     "invalid_mobile": "Invalid Mobile",
     "mobile_10_digits": "Mobile number must be exactly 10 digits",
     "weak_password": "Weak Password",
-    "password_requirements": "Password must be at least 8 characters long and include a letter, a number, and a special character.",
+    "password_requirements": "Password must be at least 8 characters long and include an uppercase letter, a number, and a special character.",
     "signup_failed": "Signup Failed",
 
     // Create Wedding
@@ -330,7 +330,7 @@ const translations = {
     "invalid_mobile": "અમાન્ય મોબાઇલ",
     "mobile_10_digits": "મોબાઇલ નંબર બરાબર 10 અંકનો હોવો જોઈએ",
     "weak_password": "નબળો પાસવર્ડ",
-    "password_requirements": "પાસવર્ડ ઓછામાં ઓછો 8 અક્ષરોનો હોવો જોઈએ અને તેમાં એક અક્ષર, એક નંબર અને વિશેષ અક્ષર શામેલ હોવો જોઈએ.",
+    "password_requirements": "પાસવર્ડ ઓછામાં ઓછો 8 અક્ષરોનો હોવો જોઈએ અને તેમાં એક કેપિટલ અક્ષર, એક નંબર અને વિશેષ અક્ષર શામેલ હોવો જોઈએ.",
     "signup_failed": "સાઇન અપ નિષ્ફળ",
 
     // Create Wedding

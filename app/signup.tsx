@@ -95,7 +95,7 @@ export default function SignUpScreen() {
 
     // Password Validation: Min 8 chars, 1 letter, 1 number, 1 special char
     const trimmedPassword = password.trim();
-    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
     console.log("DEBUG: Validation checking password:", trimmedPassword, "length:", trimmedPassword.length, "result:", passwordRegex.test(trimmedPassword));
 
     if (!passwordRegex.test(trimmedPassword)) {
