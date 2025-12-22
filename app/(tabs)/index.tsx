@@ -259,25 +259,15 @@ function WeddingDashboard({ weddingData, onSwitch }: { weddingData: { groomName:
         </TouchableOpacity>
 
         {/* Expense Card */}
+        {/* Expense Card */}
         <TouchableOpacity
           style={[styles.card, styles.expenseCard]}
           onPress={() => {
             if (totalBudget > 0) {
               router.push("/expenses");
             } else {
-              Alert.alert(
-                t("budget_required"),
-                t("set_budget_msg"),
-                [
-                  { text: t("cancel"), style: "cancel" },
-                  {
-                    text: t("set_budget"), onPress: () => {
-                      setBudgetInput("0");
-                      setShowBudgetModal(true);
-                    }
-                  }
-                ]
-              );
+              setBudgetInput("0");
+              setShowBudgetModal(true);
             }
           }}
           activeOpacity={0.9}
@@ -287,23 +277,39 @@ function WeddingDashboard({ weddingData, onSwitch }: { weddingData: { groomName:
               <Ionicons name="wallet" size={18} color="#000" />
             </View>
             <Text style={styles.cardTitle}>{t("expense")}</Text>
-            {/* Edit Budget Icon */}
-            <TouchableOpacity onPress={() => { setBudgetInput(totalBudget.toString()); setShowBudgetModal(true); }} style={{ marginLeft: 'auto', padding: 4 }}>
-              <Ionicons name="pencil" size={18} color="#000" />
-            </TouchableOpacity>
+            {/* Edit Budget Icon - Only show if budget is set */}
+            {totalBudget > 0 && (
+              <TouchableOpacity onPress={() => { setBudgetInput(totalBudget.toString()); setShowBudgetModal(true); }} style={{ marginLeft: 'auto', padding: 4 }}>
+                <Ionicons name="pencil" size={18} color="#000" />
+              </TouchableOpacity>
+            )}
           </View>
-          <View style={styles.cardInternalRow}>
-            <View style={[styles.statBox, styles.expenseStatBox]}>
-              <Ionicons name="cash-outline" size={20} color="#000" style={styles.statIcon} />
-              <Text style={styles.statLabel}>{t("remaining")}</Text>
-              <Text style={styles.statValue}>₹ {remainingBudget.toLocaleString()}</Text>
+
+          {totalBudget === 0 ? (
+            // Empty State: Set Budget
+            <View style={[styles.cardInternalRow, { justifyContent: 'center', paddingVertical: 10 }]}>
+              <View style={{ alignItems: 'center' }}>
+                <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: 'rgba(0,0,0,0.1)', justifyContent: 'center', alignItems: 'center', marginBottom: 8 }}>
+                  <Ionicons name="add" size={30} color="#000" />
+                </View>
+                <Text style={{ fontSize: 16, fontWeight: '600', color: '#000' }}>{t("set_budget")}</Text>
+              </View>
             </View>
-            <View style={[styles.statBox, styles.expenseStatBox]}>
-              <Image source={require("../../assets/images/money-send.png")} style={{ width: 36, height: 36, marginBottom: 4, resizeMode: "contain", tintColor: "#000" }} />
-              <Text style={styles.statLabel}>{t("spent")}</Text>
-              <Text style={styles.statValue}>₹ {totalSpent.toLocaleString()}</Text>
+          ) : (
+            // Filled State: Total Budget & Spent
+            <View style={styles.cardInternalRow}>
+              <View style={[styles.statBox, styles.expenseStatBox]}>
+                <Image source={require("../../assets/images/dollar-circle.png")} style={{ width: 36, height: 36, marginBottom: 4, resizeMode: "contain", tintColor: "#000" }} />
+                <Text style={styles.statLabel}>Total Budget</Text>
+                <Text style={styles.statValue}>₹ {totalBudget.toLocaleString()}</Text>
+              </View>
+              <View style={[styles.statBox, styles.expenseStatBox]}>
+                <Image source={require("../../assets/images/money-send.png")} style={{ width: 36, height: 36, marginBottom: 4, resizeMode: "contain", tintColor: "#000" }} />
+                <Text style={styles.statLabel}>{t("spent")}</Text>
+                <Text style={styles.statValue}>₹ {totalSpent.toLocaleString()}</Text>
+              </View>
             </View>
-          </View>
+          )}
         </TouchableOpacity>
 
         {/* Invitation Card */}
