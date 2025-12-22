@@ -5,6 +5,7 @@ const Wedding = require('../models/Wedding');
 const Guest = require('../models/Guest');
 const Expense = require('../models/Expense');
 const Shagun = require('../models/Shagun');
+const sendEmail = require('../utils/sendEmail');
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET || 'secret123', {
@@ -71,6 +72,25 @@ const registerUser = async (req, res) => {
         console.log('==================================================');
         console.log('\n\n');
 
+        // Send OTP via Email
+        const message = `Your OTP for registration is: ${otp}\n\nIt is valid for 10 minutes.`;
+
+        try {
+            await sendEmail({
+                email: email,
+                subject: 'Your OTP for Registration',
+                message: message,
+            });
+            console.log('OTP Email sent successfully');
+        } catch (emailError) {
+            console.error('Error sending email:', emailError);
+            // We might choose to fail here, or just log it and rely on console OTP for dev.
+            // For production, we should probably fail or alert.
+            // keeping it non-blocking for now to avoid breaking flow if SMTP is bad, but user specifically asked for SMTP.
+            // Let's return error if email fails so they know to check credentials.
+            return res.status(500).json({ message: 'Email could not be sent. Check SMTP credentials.' });
+        }
+
         let user;
         const existingUser = userByEmail || userByMobile;
 
@@ -104,8 +124,9 @@ const registerUser = async (req, res) => {
 
         if (user) {
             res.status(201).json({
-                message: 'OTP sent to mobile number',
+                message: 'OTP sent to mobile number and email',
                 mobile: user.mobile,
+                email: user.email
             });
         } else {
             res.status(400).json({ message: 'Invalid user data' });
