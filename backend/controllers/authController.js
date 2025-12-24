@@ -56,6 +56,7 @@ const registerUser = async (req, res) => {
                     email: user.email,
                     mobile: user.mobile,
                     token: generateToken(user.id),
+                    isPremium: user.isPremium,
                     message: 'User registered successfully via Firebase'
                 });
             }
@@ -72,28 +73,16 @@ const registerUser = async (req, res) => {
         console.log('==================================================');
         console.log('\n\n');
 
-        // Send OTP via Email
-        const message = `Your OTP for registration is: ${otp}\n\nIt is valid for 10 minutes.`;
-
-        try {
-            await sendEmail({
-                email: email,
-                subject: 'Your OTP for Registration',
-                message: message,
-            });
-            console.log('OTP Email sent successfully');
-        } catch (emailError) {
-            console.error('Error sending email:', emailError);
-            // We might choose to fail here, or just log it and rely on console OTP for dev.
-            // For production, we should probably fail or alert.
-            // keeping it non-blocking for now to avoid breaking flow if SMTP is bad, but user specifically asked for SMTP.
-            // Let's return error if email fails so they know to check credentials.
-            return res.status(500).json({ message: 'Email could not be sent. Check SMTP credentials.' });
+        // Check if SMTP is configured before trying to send
+        if (!process.env.SMTP_HOST || !process.env.SMTP_EMAIL) {
+            console.error('SMTP Environment Variables Missing');
+            return res.status(500).json({ message: 'Server Email Config Missing. Please add SMTP keys to Render.' });
         }
 
         let user;
         const existingUser = userByEmail || userByMobile;
 
+        // DB Operations first (Blocking but fast)
         if (existingUser) {
             // Force update to ensure OTP is saved
             await User.updateOne(
@@ -123,12 +112,30 @@ const registerUser = async (req, res) => {
         }
 
         if (user) {
+            // Send success response IMMEDIATELY
             res.status(201).json({
-                message: 'OTP sent to mobile number and email',
+                message: 'OTP sent to your email',
                 mobile: user.mobile,
                 email: user.email
             });
+
+            // Send OTP via Email (BACKGROUND PROCESS - NON-BLOCKING)
+            const message = `Your OTP for registration is: ${otp}\n\nIt is valid for 10 minutes.`;
+
+            sendEmail({
+                email: email,
+                subject: 'Your OTP for Registration',
+                message: message,
+            }).then(() => {
+                console.log('OTP Email sent successfully (Background)');
+            }).catch((emailError) => {
+                console.error('Error sending email (Background):', emailError);
+                // Note: We cannot send a response here as it has already been sent.
+                // The user will just not receive the email and can try again.
+            });
+
         } else {
+            // Should not happen if create/update works
             res.status(400).json({ message: 'Invalid user data' });
         }
     } catch (error) {
@@ -169,6 +176,7 @@ const verifyOtp = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 token: generateToken(user.id),
+                isPremium: user.isPremium,
             });
         }
 
@@ -186,6 +194,7 @@ const verifyOtp = async (req, res) => {
             name: user.name,
             email: user.email,
             token: generateToken(user.id),
+            isPremium: user.isPremium,
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -197,6 +206,11 @@ const verifyOtp = async (req, res) => {
 // @access  Public
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
+
+    // Basic validation
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Email and password are required' });
+    }
 
     try {
         console.log('Login Attempt:', email);
@@ -224,13 +238,15 @@ const loginUser = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 token: generateToken(user.id),
+                isPremium: user.isPremium,
             });
         } else {
             console.log('Login Failed: Password Mismatch');
             res.status(401).json({ message: 'Invalid email or password' });
         }
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Login Error:', error);
+        res.status(500).json({ message: 'Server error. Please try again later.' });
     }
 };
 
@@ -256,4 +272,17 @@ const deleteAccount = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, verifyOtp, deleteAccount };
+const upgradeToPremium = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const user = await User.findByIdAndUpdate(userId, { isPremium: true }, { new: true });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json({ message: 'User upgraded to premium', isPremium: user.isPremium });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { registerUser, loginUser, verifyOtp, deleteAccount, upgradeToPremium };
