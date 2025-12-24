@@ -112,27 +112,27 @@ const registerUser = async (req, res) => {
         }
 
         if (user) {
-            // Send success response IMMEDIATELY
-            res.status(201).json({
-                message: 'OTP sent to your email',
-                mobile: user.mobile,
-                email: user.email
-            });
-
-            // Send OTP via Email (BACKGROUND PROCESS - NON-BLOCKING)
+            // Send OTP via Email (Blocking but Optimized)
             const message = `Your OTP for registration is: ${otp}\n\nIt is valid for 10 minutes.`;
 
-            sendEmail({
-                email: email,
-                subject: 'Your OTP for Registration',
-                message: message,
-            }).then(() => {
-                console.log('OTP Email sent successfully (Background)');
-            }).catch((emailError) => {
-                console.error('Error sending email (Background):', emailError);
-                // Note: We cannot send a response here as it has already been sent.
-                // The user will just not receive the email and can try again.
-            });
+            try {
+                await sendEmail({
+                    email: email,
+                    subject: 'Your OTP for Registration',
+                    message: message,
+                });
+                console.log('OTP Email sent successfully');
+
+                // Only send response if email succeeds
+                res.status(201).json({
+                    message: 'OTP sent to your email',
+                    mobile: user.mobile,
+                    email: user.email
+                });
+            } catch (emailError) {
+                console.error('Error sending email:', emailError);
+                return res.status(500).json({ message: 'Email could not be sent. Please try again later.' });
+            }
 
         } else {
             // Should not happen if create/update works
