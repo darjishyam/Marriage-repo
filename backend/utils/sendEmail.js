@@ -11,18 +11,20 @@ const sendEmail = async (options) => {
 
     const data = {
         sender: {
-            name: process.env.FROM_NAME || 'Shagun App',
-            email: process.env.SMTP_EMAIL // Ensure this is a verified sender in Brevo
+            name: 'Shagun App', // Explicit Sender Name
+            email: process.env.SMTP_EMAIL || 'professorshyam123@gmail.com'
         },
         to: [
             {
                 email: options.email,
-                name: options.name || options.email
+                name: options.name || 'User'
             }
         ],
         subject: options.subject,
-        textContent: options.message,
+        htmlContent: `<p>${options.message}</p>`, // Use htmlContent instead of textContent for better delivery
     };
+
+    console.log('Sending Email Payload:', JSON.stringify(data, null, 2));
 
     try {
         const response = await axios.post('https://api.brevo.com/v3/smtp/email', data, {
