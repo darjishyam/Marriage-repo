@@ -1,0 +1,228 @@
+
+import { useGuest } from "@/contexts/GuestContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+export default function AddGuestScreen() {
+  const router = useRouter();
+  const { addGuest } = useGuest();
+  const { t } = useLanguage();
+
+  const [name, setName] = useState("");
+  const [totalFamilyCount, setTotalFamilyCount] = useState("");
+  const [cityVillage, setCityVillage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const resetForm = () => {
+    setName("");
+    setTotalFamilyCount("");
+    setCityVillage("");
+  };
+
+  const handleSaveCommon = async (shouldGoBack: boolean) => {
+    if (!name.trim() || !totalFamilyCount.trim() || !cityVillage.trim()) {
+      Alert.alert(t("error"), t("all_fields_mandatory"));
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await addGuest(name, parseInt(totalFamilyCount), cityVillage);
+      Alert.alert(t("success"), t("guest_added_success"));
+      if (shouldGoBack) {
+        // Redirect to Home Page as requested
+        router.navigate("/(tabs)");
+      } else {
+        resetForm();
+      }
+    } catch (error) {
+      Alert.alert(t("error"), t("failed_add_guest"));
+    } finally {
+      setLoading(false);
+
+    }
+  }
+
+  const handleSaveAndAddAnother = () => handleSaveCommon(false);
+  const handleSave = () => handleSaveCommon(true);
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+      >
+        {/* Navigation Bar */}
+        <View style={styles.navBar}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <Ionicons name="arrow-back" size={24} color="#000" />
+          </TouchableOpacity>
+          <Text style={styles.navTitle}>{t("add_new_guest")}</Text>
+          <View style={styles.placeholder} />
+        </View>
+
+        {/* Form Content */}
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Name Field */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>{t("name")}</Text>
+            <TextInput
+              style={[styles.input, Platform.OS === 'web' && ({ outlineStyle: 'none' } as any)]}
+              value={name}
+              onChangeText={setName}
+              placeholder="Moon"
+              placeholderTextColor="#999"
+            />
+          </View>
+
+          {/* Total family Count Field */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>{t("total_family_count")}</Text>
+            <TextInput
+              style={[styles.input, Platform.OS === 'web' && ({ outlineStyle: 'none' } as any)]}
+              value={totalFamilyCount}
+              onChangeText={setTotalFamilyCount}
+              placeholder="5"
+              placeholderTextColor="#999"
+              keyboardType="numeric"
+            />
+          </View>
+
+          {/* City/Village Field */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>{t("city_village")}</Text>
+            <TextInput
+              style={[styles.input, Platform.OS === 'web' && ({ outlineStyle: 'none' } as any)]}
+              value={cityVillage}
+              onChangeText={setCityVillage}
+              placeholder="Surat"
+              placeholderTextColor="#999"
+            />
+          </View>
+        </ScrollView>
+
+        {/* Action Buttons */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[styles.saveAndAddButton, loading && { opacity: 0.7 }]}
+            onPress={handleSaveAndAddAnother}
+            disabled={loading}
+          >
+            <Text style={styles.saveAndAddButtonText}>{t("save_and_add_another")}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.saveButton, loading && { opacity: 0.7 }]}
+            onPress={handleSave}
+            disabled={loading}
+          >
+            <Text style={styles.saveButtonText}>{loading ? "Saving..." : t("save")}</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+  navBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 12,
+    borderBottomWidth: 0,
+  },
+  backButton: {
+    padding: 8,
+    marginLeft: -8,
+  },
+  navTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#000",
+  },
+  placeholder: {
+    width: 40,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingTop: 24,
+    paddingBottom: 20,
+  },
+  inputGroup: {
+    marginBottom: 24,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#000",
+    marginBottom: 8,
+  },
+  input: {
+    height: 55,
+    borderWidth: 1,
+    borderColor: "#E6E6E6",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    color: "#000",
+    backgroundColor: "#FFFFFF",
+  },
+  buttonContainer: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: "#F0F0F0",
+  },
+  saveAndAddButton: {
+    backgroundColor: "#FFFFFF",
+    height: 55,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#000",
+    marginBottom: 12,
+  },
+  saveAndAddButtonText: {
+    color: "#000",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  saveButton: {
+    backgroundColor: "#000",
+    height: 55,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  saveButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+});
+
