@@ -8,6 +8,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 export default function SignupScreen() {
   const router = useRouter();
@@ -21,31 +22,44 @@ export default function SignupScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Helper for cross-platform alerts
-  const showAlert = (title: string, message: string) => {
-    if (Platform.OS === 'web') {
-      window.alert(`${title}: ${message}`);
-    } else {
-      Alert.alert(title, message);
-    }
-  };
-
   const handleSignup = async () => {
     if (!name || !email || !mobile || !password) {
-      showAlert(t("error"), t("all_fields_mandatory") || "All fields are required");
+      Toast.show({
+        type: "error",
+        text1: t("error"),
+        text2: t("all_fields_mandatory") || "All fields are required",
+      });
+      return;
+    }
+    // Email Validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Toast.show({
+        type: "error",
+        text1: t("invalid_email") || "Invalid Email",
+        text2: t("enter_valid_email") || "Please enter a valid email address",
+      });
       return;
     }
 
     // Smart Check for common typos
     if (email.toLowerCase().endsWith("@gmail.co")) {
-      showAlert("Did you mean @gmail.com?", "It looks like you typed '@gmail.co' instead of '@gmail.com'.");
+      Toast.show({
+        type: "info",
+        text1: "Did you mean @gmail.com?",
+        text2: "It looks like you typed '@gmail.co' instead of '@gmail.com'.",
+      });
       return;
     }
 
     // Mobile Validation: Exactly 10 digits
     const mobileRegex = /^\d{10}$/;
     if (!mobileRegex.test(mobile)) {
-      showAlert(t("invalid_mobile"), t("mobile_10_digits") || "Mobile number must be 10 digits");
+      Toast.show({
+        type: "error",
+        text1: t("invalid_mobile"),
+        text2: t("mobile_10_digits") || "Mobile number must be 10 digits",
+      });
       return;
     }
 
@@ -54,7 +68,12 @@ export default function SignupScreen() {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
 
     if (!passwordRegex.test(trimmedPassword)) {
-      showAlert(t("weak_password"), t("password_requirements") || "Password must be at least 8 characters, with 1 uppercase, 1 lowercase, 1 number, and 1 special char.");
+      Toast.show({
+        type: "error",
+        text1: t("weak_password"),
+        text2: t("password_requirements") || "Password must be at least 8 characters, with 1 uppercase, 1 lowercase, 1 number, and 1 special char.",
+        visibilityTime: 5000, // Longer time to read
+      });
       return;
     }
 
@@ -71,8 +90,40 @@ export default function SignupScreen() {
 
     } catch (error: any) {
       console.error("Signup Error Details:", error);
-      const errorMessage = error.response?.data?.message || error.message || t("error");
-      showAlert(t("signup_failed"), errorMessage);
+
+      // Determine the error message string
+      let errorMessage = t("error");
+      if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error?.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+
+      console.log("Final Error Message:", errorMessage); // Debugging
+
+      if (errorMessage.toLowerCase().includes("already exists")) {
+        if (Platform.OS === 'web') {
+          const confirmLogin = window.confirm(`${errorMessage}. Would you like to log in?`);
+          if (confirmLogin) router.push("/login");
+        } else {
+          Alert.alert(
+            "Account Exists",
+            "This account is already registered. Please log in.",
+            [
+              { text: "Cancel", style: "cancel" },
+              { text: "Log In", onPress: () => router.push("/login") }
+            ]
+          );
+        }
+      } else {
+        Toast.show({
+          type: "error",
+          text1: t("signup_failed"),
+          text2: errorMessage,
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -85,7 +136,11 @@ export default function SignupScreen() {
     } catch (error: any) {
       console.error("Google Sign-In Error:", error);
       if (error.code === 'SIGN_IN_CANCELLED') return;
-      showAlert("Google Login Failed", error.message || "Something went wrong");
+      Toast.show({
+        type: "error",
+        text1: "Google Login Failed",
+        text2: error.message || "Something went wrong",
+      });
     }
   };
 
@@ -149,7 +204,7 @@ export default function SignupScreen() {
         <Text style={styles.divider}>OR</Text>
 
         {/* Apple */}
-        <TouchableOpacity style={styles.socialButton} onPress={() => showAlert("Coming Soon", "Apple Sign-In will be available soon!")}>
+        <TouchableOpacity style={styles.socialButton} onPress={() => Toast.show({ type: "info", text1: "Coming Soon", text2: "Apple Sign-In will be available soon!" })}>
           <FontAwesome name="apple" size={22} color="black" style={{ marginRight: 10 }} />
           <Text style={styles.socialText}>{t("continue_apple") || "Continue with Apple"}</Text>
         </TouchableOpacity>
@@ -167,7 +222,11 @@ export default function SignupScreen() {
             router.replace("/(tabs)");
           } catch (error: any) {
             console.error("Facebook Sign-In Error:", error);
-            showAlert("Facebook Login Failed", error.message);
+            Toast.show({
+              type: "error",
+              text1: "Facebook Login Failed",
+              text2: error.message,
+            });
           }
         }}>
           <View style={{

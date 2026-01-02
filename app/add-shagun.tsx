@@ -3,10 +3,12 @@ import CustomHeader from "@/components/CustomHeader";
 import CustomInput from "@/components/CustomInput";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ScrollView, StyleSheet, View } from "react-native";
+
 import { useShagun } from "@/contexts/ShagunContext";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, ScrollView, StyleSheet, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 export default function AddShagunScreen() {
   const router = useRouter();
@@ -22,7 +24,11 @@ export default function AddShagunScreen() {
   const handleSave = () => {
     // Validation
     if (!name.trim() || !shagunAmount.trim() || !city.trim() || !gift1.trim() || !contact.trim() || !wishes.trim()) {
-      Alert.alert(t("error"), t("all_fields_mandatory"));
+      Toast.show({
+        type: "error",
+        text1: t("error"),
+        text2: t("all_fields_mandatory"),
+      });
       return;
     }
 
@@ -30,7 +36,11 @@ export default function AddShagunScreen() {
     const cleanedContact = contact.replace(/\D/g, ""); // Remove non-digits
     const digits = cleanedContact.slice(-10);
     if (cleanedContact.length < 10 || digits.length !== 10) {
-      Alert.alert(t("error"), t("mobile_invalid"));
+      Toast.show({
+        type: "error",
+        text1: t("error"),
+        text2: t("mobile_invalid"),
+      });
       return;
     }
 

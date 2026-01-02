@@ -1,11 +1,13 @@
 
+import { Ionicons } from "@expo/vector-icons";
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 import { useGuest } from "@/contexts/GuestContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 export default function AddGuestScreen() {
   const router = useRouter();
@@ -25,14 +27,22 @@ export default function AddGuestScreen() {
 
   const handleSaveCommon = async (shouldGoBack: boolean) => {
     if (!name.trim() || !totalFamilyCount.trim() || !cityVillage.trim()) {
-      Alert.alert(t("error"), t("all_fields_mandatory"));
+      Toast.show({
+        type: "error",
+        text1: t("error"),
+        text2: t("all_fields_mandatory"),
+      });
       return;
     }
 
     setLoading(true);
     try {
       await addGuest(name, parseInt(totalFamilyCount), cityVillage);
-      Alert.alert(t("success"), t("guest_added_success"));
+      Toast.show({
+        type: "success",
+        text1: t("success"),
+        text2: t("guest_added_success"),
+      });
       if (shouldGoBack) {
         // Redirect to Home Page as requested
         router.navigate("/(tabs)");
@@ -40,7 +50,11 @@ export default function AddGuestScreen() {
         resetForm();
       }
     } catch (error) {
-      Alert.alert(t("error"), t("failed_add_guest"));
+      Toast.show({
+        type: "error",
+        text1: t("error"),
+        text2: t("failed_add_guest"),
+      });
     } finally {
       setLoading(false);
 

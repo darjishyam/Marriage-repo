@@ -3,6 +3,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 export default function OtpScreen() {
   const router = useRouter();
@@ -32,11 +33,19 @@ export default function OtpScreen() {
         throw new Error("Missing user details for resend");
       }
       await register(name, email, mobile, password);
-      Alert.alert("Success", "OTP has been resent to your email.");
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "OTP has been resent to your email.",
+      });
       setTimer(29);
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || "Failed to resend OTP";
-      Alert.alert("Error", errorMessage);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: errorMessage,
+      });
     } finally {
       setLoading(false);
     }
@@ -44,7 +53,11 @@ export default function OtpScreen() {
 
   const handleVerify = async () => {
     if (!otp) {
-      Alert.alert("Error", "Please enter OTP");
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please enter OTP",
+      });
       return;
     }
     setLoading(true);
@@ -97,7 +110,7 @@ export default function OtpScreen() {
 
           <Text style={styles.title}>OTP Verification</Text>
           <Text style={styles.subtitle}>
-            Please check your phone ({mobile}) to see the verification code.
+            Please check your email ({email}) to see the verification code.
           </Text>
 
           <View style={styles.otpContainer}>

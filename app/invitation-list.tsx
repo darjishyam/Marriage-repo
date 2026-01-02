@@ -1,12 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { Alert, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useGuest } from "@/contexts/GuestContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { PDFService } from "@/services/PDFService";
+
+import Toast from "react-native-toast-message";
 
 export default function InvitationListScreen() {
   const router = useRouter();
@@ -16,14 +18,12 @@ export default function InvitationListScreen() {
 
   const handleAddGuest = () => {
     if (!user) {
-      if (Platform.OS === 'web') {
-        if (window.confirm("Login Required\n\nYou need to login to add a guest.")) router.push("/login");
-      } else {
-        Alert.alert("Login Required", "You need to login to add a guest.", [
-          { text: "Cancel", style: "cancel" },
-          { text: "Login", onPress: () => router.push("/login") }
-        ]);
-      }
+      Toast.show({
+        type: "error",
+        text1: "Login Required",
+        text2: "Redirecting to login...",
+      });
+      router.push("/login");
       return;
     }
     router.push("/add-guest");
@@ -31,14 +31,12 @@ export default function InvitationListScreen() {
 
   const handleExportPDF = async () => {
     if (!user?.isPremium) {
-      Alert.alert(
-        "Premium Feature",
-        "Exporting to PDF is a premium feature. Upgrade to unlock!",
-        [
-          { text: "Cancel", style: "cancel" },
-          { text: "Upgrade", onPress: () => router.push("/purchase-premium") }
-        ]
-      );
+      Toast.show({
+        type: "info",
+        text1: "Premium Feature",
+        text2: "Redirecting to upgrade...",
+      });
+      router.push("/purchase-premium");
       return;
     }
 

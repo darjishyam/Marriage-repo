@@ -4,8 +4,10 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { PDFService } from "@/services/PDFService";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { Alert, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+import Toast from "react-native-toast-message";
 
 export default function ExpenseListScreen() {
     const router = useRouter();
@@ -15,14 +17,12 @@ export default function ExpenseListScreen() {
 
     const handleAddExpense = () => {
         if (!user) {
-            if (Platform.OS === 'web') {
-                if (window.confirm("Login Required\n\nYou need to login to add an expense.")) router.push("/login");
-            } else {
-                Alert.alert("Login Required", "You need to login to add an expense.", [
-                    { text: "Cancel", style: "cancel" },
-                    { text: "Login", onPress: () => router.push("/login") }
-                ]);
-            }
+            Toast.show({
+                type: "error",
+                text1: "Login Required",
+                text2: "Redirecting to login...",
+            });
+            router.push("/login");
             return;
         }
         router.push("/expenses/add-expense");
@@ -30,14 +30,12 @@ export default function ExpenseListScreen() {
 
     const handleExportPDF = async () => {
         if (!user?.isPremium) {
-            Alert.alert(
-                "Premium Feature",
-                "Exporting expenses to PDF is a premium feature. Upgrade to unlock!",
-                [
-                    { text: "Cancel", style: "cancel" },
-                    { text: "Upgrade", onPress: () => router.push("/purchase-premium") }
-                ]
-            );
+            Toast.show({
+                type: "info",
+                text1: "Premium Feature",
+                text2: "Redirecting to upgrade...",
+            });
+            router.push("/purchase-premium");
             return;
         }
 

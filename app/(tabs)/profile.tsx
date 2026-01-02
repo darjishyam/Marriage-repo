@@ -5,8 +5,10 @@ import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, Image, Modal, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, Modal, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+import Toast from "react-native-toast-message";
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -22,7 +24,11 @@ export default function ProfileScreen() {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (status !== 'granted') {
-      Alert.alert(t("permission_denied"), t("permission_denied_msg"));
+      Toast.show({
+        type: "error",
+        text1: t("permission_denied"),
+        text2: t("permission_denied_msg"),
+      });
       return;
     }
 

@@ -1,10 +1,5 @@
-import { useExpense } from "@/contexts/ExpenseContext";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { useState } from "react";
 import {
-    Alert,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
@@ -15,6 +10,12 @@ import {
     View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+import { useExpense } from "@/contexts/ExpenseContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import Toast from "react-native-toast-message";
 
 export default function AddExpenseScreen() {
     const router = useRouter();
@@ -32,7 +33,11 @@ export default function AddExpenseScreen() {
 
     const handleSave = async (shouldGoBack: boolean) => {
         if (!title || !amount) {
-            Alert.alert(t("error"), t("enter_title_amount"));
+            Toast.show({
+                type: "error",
+                text1: t("error"),
+                text2: t("enter_title_amount"),
+            });
             return;
         }
 
@@ -40,19 +45,31 @@ export default function AddExpenseScreen() {
         const numPaid = parseFloat(paidAmount) || 0;
 
         if (isNaN(numAmount) || numAmount <= 0) {
-            Alert.alert(t("error"), t("enter_valid_amount"));
+            Toast.show({
+                type: "error",
+                text1: t("error"),
+                text2: t("enter_valid_amount"),
+            });
             return;
         }
 
         if (numPaid > numAmount) {
-            Alert.alert(t("error"), t("paid_amount_error"));
+            Toast.show({
+                type: "error",
+                text1: t("error"),
+                text2: t("paid_amount_error"),
+            });
             return;
         }
 
         setLoading(true);
         try {
-            await addExpense(title, numAmount, numPaid, "Other"); // Category hardcoded or we can add it back if needed, but design implies simplification
-            Alert.alert(t("success"), t("expense_added_success"));
+            await addExpense(title, numAmount, numPaid, "Other");
+            Toast.show({
+                type: "success",
+                text1: t("success"),
+                text2: t("expense_added_success"),
+            });
             if (shouldGoBack) {
                 router.replace("/expenses");
             } else {
@@ -61,7 +78,11 @@ export default function AddExpenseScreen() {
                 setPaidAmount("");
             }
         } catch (error) {
-            Alert.alert(t("error"), t("failed_add_expense"));
+            Toast.show({
+                type: "error",
+                text1: t("error"),
+                text2: t("failed_add_expense"),
+            });
         } finally {
             setLoading(false);
         }

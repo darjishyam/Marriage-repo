@@ -5,7 +5,11 @@ import ScreenWrapper from "@/components/ScreenWrapper";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+import Toast from "react-native-toast-message";
+
+// ... existing imports
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -18,7 +22,11 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert("Error", "Please fill in all fields");
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "All fields are mandatory",
+      });
       return;
     }
     setLoading(true);
@@ -26,7 +34,11 @@ export default function LoginScreen() {
       await login(email, password);
       router.replace("/(tabs)");
     } catch (error: any) {
-      Alert.alert("Login Failed", error || "Something went wrong");
+      Toast.show({
+        type: "error",
+        text1: "Login Failed",
+        text2: typeof error === 'string' ? error : (error.message || "Something went wrong"),
+      });
     } finally {
       setLoading(false);
     }

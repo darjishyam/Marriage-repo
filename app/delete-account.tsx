@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 export default function DeleteAccountScreen() {
   const router = useRouter();
@@ -37,13 +38,19 @@ export default function DeleteAccountScreen() {
     setIsDeleting(true);
     try {
       await deleteAccount();
+      Toast.show({
+        type: "success",
+        text1: t("success"),
+        text2: "Account deleted successfully",
+      });
       router.replace("/onboarding");
     } catch (error) {
-      if (Platform.OS === 'web') {
-        window.alert(`${t("error")}: ${t("failed_delete_account") || "Failed to delete account"}`);
-      } else {
-        Alert.alert(t("error"), t("failed_delete_account") || "Failed to delete account");
-      }
+      const errorMessage = t("failed_delete_account") || "Failed to delete account";
+      Toast.show({
+        type: "error",
+        text1: t("error"),
+        text2: errorMessage,
+      });
     } finally {
       setIsDeleting(false);
     }

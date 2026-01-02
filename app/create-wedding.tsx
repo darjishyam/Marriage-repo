@@ -10,7 +10,6 @@ import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-  Alert,
   Image,
   Modal,
   Platform,
@@ -20,6 +19,8 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
+
+import Toast from "react-native-toast-message";
 
 export default function CreateWeddingScreen() {
   const router = useRouter();
@@ -52,7 +53,11 @@ export default function CreateWeddingScreen() {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (status !== 'granted') {
-      Alert.alert(t("permission_denied"), t("permission_denied_msg"));
+      Toast.show({
+        type: "error",
+        text1: t("permission_denied"),
+        text2: t("permission_denied_msg"),
+      });
       return;
     }
 
@@ -63,13 +68,11 @@ export default function CreateWeddingScreen() {
       quality: 0.5,
       base64: true,
     });
-
     if (!result.canceled && result.assets[0].base64) {
-      const imageUri = `data:image/jpeg;base64,${result.assets[0].base64}`;
       if (isGroom) {
-        setGroomImage(imageUri);
+        setGroomImage(`data:image/jpeg;base64,${result.assets[0].base64}`);
       } else {
-        setBrideImage(imageUri);
+        setBrideImage(`data:image/jpeg;base64,${result.assets[0].base64}`);
       }
     }
   };
@@ -92,7 +95,11 @@ export default function CreateWeddingScreen() {
       } catch (error: any) {
         console.error("Create wedding error full object:", error);
         const errorMessage = error.response?.data?.message || error.message || "Unknown error";
-        alert(`${t("failed_create_wedding")}: ${errorMessage}`);
+        Toast.show({
+          type: "error",
+          text1: t("failed_create_wedding"),
+          text2: errorMessage,
+        });
       } finally {
         setIsSaving(false);
       }

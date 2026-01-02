@@ -2,68 +2,76 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, Image as RNImage, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image as RNImage, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 export default function PurchasePremiumScreen() {
   const router = useRouter();
-  const { user, login, isDemo, reloadUser } = useAuth(); // We might need to refresh user data, but login overwrites it. 
-  // Better to add a 'refreshUser' or similar, but for now we can just manual call api or relogin.
-  // Actually, easiest way to refresh 'user' in context is to update the state manually or have a 'reloadUser' method.
-  // User context update is tricky without a dedicated method. I will use a simple workaround: logout/login or just alert success.
-  // Wait, I can't easily refresh user context without a method.
-  // I'll add `refreshProfile` to AuthContext later. For now, I'll just call the API and alert.
+  const { user, isDemo, reloadUser } = useAuth();
+  const [loading, setLoading] = useState(false);
 
-  const [isProcessing, setIsProcessing] = useState(false);
+  const upgradeToPremium = async () => {
+    // In a real app, integrate Razorpay/Stripe here.
+    // For now, we simulate a backend call.
+    try {
+      await require("@/services/api").default.post('/auth/upgrade');
+      if (reloadUser) {
+        await reloadUser();
+      }
+    } catch (e: any) {
+      throw new Error(e.response?.data?.message || e.message || "Upgrade failed");
+    }
+  };
 
   const handlePurchase = async () => {
     if (!user) {
-      Alert.alert("Login Required", "Please login to purchase premium.");
-      router.push("/login"); // Or however you navigate
+      Toast.show({
+        type: "error",
+        text1: "Login Required",
+        text2: "Please login to purchase premium.",
+      });
+      router.push("/login"); // Navigate to login
       return;
     }
 
-    setIsProcessing(true);
-    try {
-      // Mocking payment delay
-      setTimeout(async () => {
-        // Here we would call the backend to upgrade
-
-        if (isDemo) {
-          console.log("DEMO MODE: Simulating Purchase Success");
-          Alert.alert("Success", "You are now a Premium Member! (Demo Mode)", [
-            { text: "OK", onPress: () => router.back() }
-          ]);
-          setIsProcessing(false);
-          return;
-        }
-
-        try {
-          // await authService.upgradeUser(); // Need to implement this
-          // For now, I will assume successful "payment" and call the upgrade endpoint 
-          // We need to import api not authService for backend calls if authService is only firebase.
-          // Looking at project structure, 'services/api.ts' is axios instance.
-
-          const response = await require("@/services/api").default.post('/auth/upgrade');
-
-          Alert.alert("Success", "You are now a Premium Member!", [
-            { text: "OK", onPress: () => router.back() }
-          ]);
-
-          if (reloadUser) {
-            await reloadUser();
-          }
-
-        } catch (err) {
-          Alert.alert("Error", "Upgrade failed. Please try again.");
-          console.error(err);
-        }
-        setIsProcessing(false);
-      }, 2000);
-    } catch (error) {
-      Alert.alert("Error", "Payment failed");
-      setIsProcessing(false);
+    // DEMO MODE CHECK
+    if (process.env.EXPO_PUBLIC_DEMO_MODE === 'true' || isDemo) {
+      try {
+        // Mock success for demo
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: "You are now a Premium Member! (Demo Mode)",
+        });
+        router.back();
+      } catch (e) {
+        console.error(e);
+      }
+      return;
     }
+
+    setLoading(true);
+    // Simulating Payment Delay
+    setTimeout(async () => {
+      try {
+        await upgradeToPremium();
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: "You are now a Premium Member!",
+        });
+        router.back();
+      } catch (error: any) {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: error.message || "Upgrade failed. Please try again.",
+        });
+      } finally {
+        setLoading(false);
+      }
+    }, 2000);
   };
 
   const isPremium = user?.isPremium;
@@ -154,8 +162,8 @@ export default function PurchasePremiumScreen() {
               <Ionicons name="checkmark-circle" size={20} color="white" style={{ marginLeft: 8 }} />
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity style={styles.payButton} onPress={handlePurchase} disabled={isProcessing}>
-              <Text style={styles.payButtonText}>{isProcessing ? "Processing..." : "Upgrade to Premium (₹120)"}</Text>
+            <TouchableOpacity style={styles.payButton} onPress={handlePurchase} disabled={loading}>
+              <Text style={styles.payButtonText}>{loading ? "Processing..." : "Upgrade to Premium (₹120)"}</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -277,6 +285,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
+    flexDirection: "row",
   },
   payButtonText: {
     fontSize: 16,

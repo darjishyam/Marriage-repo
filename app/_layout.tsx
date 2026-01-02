@@ -7,6 +7,9 @@ import { StyleSheet, View } from "react-native";
 import { Provider } from 'react-redux';
 import { store } from '../store/store';
 
+import { toastConfig } from '@/components/ToastConfig';
+import Toast from 'react-native-toast-message';
+
 export default function RootLayout() {
   const [loaded, setLoaded] = useState(true);
 
@@ -48,6 +51,7 @@ export default function RootLayout() {
           </Stack>
         </View>
       </View>
+      <Toast config={toastConfig} />
     </Provider>
   );
 }
