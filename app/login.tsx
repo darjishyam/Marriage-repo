@@ -32,6 +32,11 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       await login(email, password);
+      Toast.show({
+        type: "success",
+        text1: "Login Successful",
+        text2: "Welcome back!",
+      });
       router.replace("/(tabs)");
     } catch (error: any) {
       Toast.show({

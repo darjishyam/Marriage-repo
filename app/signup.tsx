@@ -8,7 +8,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 export default function SignupScreen() {
@@ -84,6 +84,13 @@ export default function SignupScreen() {
       await register(name, email, mobile, password); // Calls backend /auth/signup (generates OTP)
 
       // Navigate to OTP screen
+      Toast.show({
+        type: "success",
+        text1: "OTP Sent",
+        text2: `Verification code sent to ${email}`,
+        visibilityTime: 4000,
+      });
+
       router.push({
         pathname: "/otp",
         params: { name, email, mobile, password }
@@ -106,17 +113,23 @@ export default function SignupScreen() {
 
       if (errorMessage.toLowerCase().includes("already exists")) {
         if (Platform.OS === 'web') {
-          const confirmLogin = window.confirm(`${errorMessage}. Would you like to log in?`);
-          if (confirmLogin) router.push("/login");
+          Toast.show({
+            type: "error",
+            text1: t("account_already_exists"),
+            text2: t("account_exists_msg"),
+          });
+          setTimeout(() => {
+            router.push("/login");
+          }, 1500);
         } else {
-          Alert.alert(
-            "Account Exists",
-            "This account is already registered. Please log in.",
-            [
-              { text: "Cancel", style: "cancel" },
-              { text: "Log In", onPress: () => router.push("/login") }
-            ]
-          );
+          Toast.show({
+            type: "error",
+            text1: t("account_already_exists"),
+            text2: t("account_exists_msg"),
+          });
+          setTimeout(() => {
+            router.push("/login"); // Navigate to login
+          }, 1500);
         }
       } else {
         Toast.show({
@@ -230,7 +243,7 @@ export default function SignupScreen() {
           />
         )}
         {Platform.OS === 'web' && (
-          <TouchableOpacity style={[styles.socialButton, { borderColor: 'black' }]} onPress={handleAppleLogin}>
+          <TouchableOpacity style={[styles.socialButton, { backgroundColor: 'black', borderColor: 'black' }]} onPress={handleAppleLogin}>
             <FontAwesome name="apple" size={22} color="white" style={{ marginRight: 10 }} />
             <Text style={[styles.socialText, { color: 'white' }]}>{t("continue_apple") || "Continue with Apple"}</Text>
           </TouchableOpacity>

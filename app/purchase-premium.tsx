@@ -1,4 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -9,6 +10,7 @@ import Toast from "react-native-toast-message";
 export default function PurchasePremiumScreen() {
   const router = useRouter();
   const { user, isDemo, reloadUser } = useAuth();
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
 
   const upgradeToPremium = async () => {
@@ -28,8 +30,8 @@ export default function PurchasePremiumScreen() {
     if (!user) {
       Toast.show({
         type: "error",
-        text1: "Login Required",
-        text2: "Please login to purchase premium.",
+        text1: t("login_required"),
+        text2: t("login_required_msg"),
       });
       router.push("/login"); // Navigate to login
       return;
@@ -41,8 +43,8 @@ export default function PurchasePremiumScreen() {
         // Mock success for demo
         Toast.show({
           type: "success",
-          text1: "Success",
-          text2: "You are now a Premium Member! (Demo Mode)",
+          text1: t("success"),
+          text2: t("demo_premium_msg"),
         });
         router.back();
       } catch (e) {
@@ -58,15 +60,15 @@ export default function PurchasePremiumScreen() {
         await upgradeToPremium();
         Toast.show({
           type: "success",
-          text1: "Success",
-          text2: "You are now a Premium Member!",
+          text1: t("success"),
+          text2: t("premium_success_msg"),
         });
         router.back();
       } catch (error: any) {
         Toast.show({
           type: "error",
-          text1: "Error",
-          text2: error.message || "Upgrade failed. Please try again.",
+          text1: t("error"),
+          text2: error.message || t("upgrade_failed_msg"),
         });
       } finally {
         setLoading(false);
@@ -86,7 +88,7 @@ export default function PurchasePremiumScreen() {
         >
           <Ionicons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
-        <Text style={styles.navTitle}>Purchase Premium</Text>
+        <Text style={styles.navTitle}>{t("purchase_premium")}</Text>
         <View style={styles.placeholder} />
       </View>
 
@@ -101,7 +103,7 @@ export default function PurchasePremiumScreen() {
                 style={{ width: 28, height: 28, resizeMode: 'contain' }}
               />
             </View>
-            <Text style={styles.cardTitle}>Shagun</Text>
+            <Text style={styles.cardTitle}>{t("shagun")}</Text>
           </View>
 
           {/* Features List */}
@@ -111,7 +113,7 @@ export default function PurchasePremiumScreen() {
               <View style={styles.checkIcon}>
                 <Ionicons name="checkmark" size={12} color="#000" />
               </View>
-              <Text style={styles.featureText}>Ads Free</Text>
+              <Text style={styles.featureText}>{t("ads_free")}</Text>
             </View>
 
             {/* Feature 2 */}
@@ -119,7 +121,7 @@ export default function PurchasePremiumScreen() {
               <View style={styles.checkIcon}>
                 <Ionicons name="checkmark" size={12} color="#000" />
               </View>
-              <Text style={styles.featureText}>Export Shagun Book to PDF</Text>
+              <Text style={styles.featureText}>{t("export_shagun_pdf")}</Text>
             </View>
 
             {/* Feature 3 */}
@@ -127,7 +129,7 @@ export default function PurchasePremiumScreen() {
               <View style={styles.checkIcon}>
                 <Ionicons name="checkmark" size={12} color="#000" />
               </View>
-              <Text style={styles.featureText}>Export Gust List k to PDF</Text>
+              <Text style={styles.featureText}>{t("export_guest_pdf")}</Text>
             </View>
 
             {/* Feature 4 */}
@@ -135,7 +137,7 @@ export default function PurchasePremiumScreen() {
               <View style={styles.checkIcon}>
                 <Ionicons name="checkmark" size={12} color="#000" />
               </View>
-              <Text style={styles.featureText}>Export Expense Book to PDF</Text>
+              <Text style={styles.featureText}>{t("export_expense_pdf")}</Text>
             </View>
 
             {/* Feature 5 */}
@@ -143,27 +145,27 @@ export default function PurchasePremiumScreen() {
               <View style={styles.checkIcon}>
                 <Ionicons name="checkmark" size={12} color="#000" />
               </View>
-              <Text style={styles.featureText}>Support</Text>
+              <Text style={styles.featureText}>{t("support")}</Text>
             </View>
           </View>
 
           {/* Price */}
           <View style={styles.priceContainer}>
-            <Text style={styles.price}>₹120 <Text style={styles.pricePeriod}>/month</Text></Text>
+            <Text style={styles.price}>₹120 <Text style={styles.pricePeriod}>/{t("per_month")}</Text></Text>
             <View style={styles.badge}>
-              <Text style={styles.badgeText}>Save 25%</Text>
+              <Text style={styles.badgeText}>{t("save_25_percent")}</Text>
             </View>
           </View>
 
           {/* Pay Button */}
           {isPremium ? (
             <TouchableOpacity style={[styles.payButton, { backgroundColor: '#4CAF50' }]} disabled={true}>
-              <Text style={styles.payButtonText}>Premium Active</Text>
+              <Text style={styles.payButtonText}>{t("premium_active")}</Text>
               <Ionicons name="checkmark-circle" size={20} color="white" style={{ marginLeft: 8 }} />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity style={styles.payButton} onPress={handlePurchase} disabled={loading}>
-              <Text style={styles.payButtonText}>{loading ? "Processing..." : "Upgrade to Premium (₹120)"}</Text>
+              <Text style={styles.payButtonText}>{loading ? t("processing") : t("upgrade_button_text")}</Text>
             </TouchableOpacity>
           )}
         </View>

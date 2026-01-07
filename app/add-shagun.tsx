@@ -27,7 +27,7 @@ export default function AddShagunScreen() {
   const [city, setCity] = useState("Surat");
   const [gift1, setGift1] = useState("Gift");
   const [contact, setContact] = useState("9999999999");
-  const [wishes, setWishes] = useState("Best wishes");
+  const [wishes, setWishes] = useState("");
 
   // Initialize with wedding date or today if not found
   const [date, setDate] = useState(
@@ -220,7 +220,7 @@ export default function AddShagunScreen() {
           label={t("wishes_message")}
           value={wishes}
           onChangeText={setWishes}
-          placeholder="Best wishes for your marriage!"
+          placeholder={t("wishes_placeholder")}
           multiline
         />
       </ScrollView>

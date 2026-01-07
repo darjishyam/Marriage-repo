@@ -41,11 +41,11 @@ export default function DeleteAccountScreen() {
       Toast.show({
         type: "success",
         text1: t("success"),
-        text2: "Account deleted successfully",
+        text2: t("account_deleted_success"),
       });
       router.replace("/onboarding");
     } catch (error) {
-      const errorMessage = t("failed_delete_account") || "Failed to delete account";
+      const errorMessage = t("failed_delete_account");
       Toast.show({
         type: "error",
         text1: t("error"),

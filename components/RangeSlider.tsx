@@ -1,3 +1,4 @@
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useEffect, useRef, useState } from "react";
 import { Dimensions, PanResponder, Platform, StyleSheet, Text, View } from "react-native";
 
@@ -14,6 +15,7 @@ const SLIDER_WIDTH = SCREEN_WIDTH - 80; // Account for padding
 const HANDLE_SIZE = 24;
 
 export function RangeSlider({ min, max, lowValue, highValue, onValueChange }: RangeSliderProps) {
+  const { t } = useLanguage();
   const [low, setLow] = useState(lowValue);
   const [high, setHigh] = useState(highValue);
   const activeHandleRef = useRef<"low" | "high" | null>(null);
@@ -72,8 +74,8 @@ export function RangeSlider({ min, max, lowValue, highValue, onValueChange }: Ra
   return (
     <View style={styles.container}>
       <View style={styles.labels}>
-        <Text style={styles.label}>High</Text>
-        <Text style={styles.label}>Low</Text>
+        <Text style={styles.label}>{t("high")}</Text>
+        <Text style={styles.label}>{t("low")}</Text>
       </View>
       <View style={styles.sliderContainer} {...panResponder.panHandlers}>
         <View style={styles.track}>

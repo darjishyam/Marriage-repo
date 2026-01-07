@@ -1,10 +1,12 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useOnboarding } from "@/contexts/OnboardingContext";
+import { useAppDispatch } from "@/store/hooks";
+import { updateUserProfile } from "@/store/slices/authSlice";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image, Modal, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -13,12 +15,19 @@ import Toast from "react-native-toast-message";
 export default function ProfileScreen() {
   const router = useRouter();
   const { user, logout } = useAuth();
+  const dispatch = useAppDispatch();
   const { resetOnboarding } = useOnboarding();
   // Language Context
   const { language, setLanguage, t } = useLanguage();
 
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user?.profileImage) {
+      setProfileImage(user.profileImage);
+    }
+  }, [user]);
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -43,7 +52,11 @@ export default function ProfileScreen() {
     if (!result.canceled && result.assets[0].base64) {
       const imageUri = `data:image/jpeg;base64,${result.assets[0].base64}`;
       setProfileImage(imageUri);
-      // TODO: Here you would typically upload this to the backend
+
+      // Upload to backend
+      if (user) {
+        dispatch(updateUserProfile({ profileImage: imageUri }));
+      }
     }
   };
 
@@ -169,7 +182,15 @@ export default function ProfileScreen() {
           </TouchableOpacity>
 
           {/* Connect on Instagram */}
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => {
+              Toast.show({
+                type: "info",
+                text1: t("coming_soon"),
+              });
+            }}
+          >
             <View style={styles.menuItemLeft}>
               <View style={[styles.iconContainer, { backgroundColor: "#F5F5F5" }]}>
                 <Ionicons name="logo-instagram" size={20} color="#000" />
