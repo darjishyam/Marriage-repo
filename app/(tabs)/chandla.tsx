@@ -8,6 +8,7 @@ import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import { Alert, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 export default function MyChandlaScreen() {
   const router = useRouter();
@@ -68,11 +69,11 @@ export default function MyChandlaScreen() {
   const handleExportPDF = async () => {
     if (!user?.isPremium) {
       Alert.alert(
-        "Premium Feature",
-        "Exporting shagun book to PDF is a premium feature. Upgrade to unlock!",
+        t("premium_feature_title"),
+        t("premium_export_msg"),
         [
-          { text: "Cancel", style: "cancel" },
-          { text: "Upgrade", onPress: () => router.push("/purchase-premium") }
+          { text: t("cancel"), style: "cancel" },
+          { text: t("upgrade"), onPress: () => router.push("/purchase-premium") }
         ]
       );
       return;
@@ -113,12 +114,23 @@ export default function MyChandlaScreen() {
             onPress={() => {
               if (!user) {
                 if (Platform.OS === 'web') {
-                  if (window.confirm("Login Required\n\nYou need to login to add shagun.")) router.push("/login");
+                  Toast.show({
+                    type: "info",
+                    text1: t("login_required"),
+                    text2: t("login_to_continue"),
+                  });
+                  setTimeout(() => {
+                    router.push("/login");
+                  }, 1500);
                 } else {
-                  Alert.alert("Login Required", "You need to login to add shagun.", [
-                    { text: "Cancel", style: "cancel" },
-                    { text: "Login", onPress: () => router.push("/login") }
-                  ]);
+                  Toast.show({
+                    type: "info",
+                    text1: t("login_required"),
+                    text2: t("login_to_continue"),
+                  });
+                  setTimeout(() => {
+                    router.push("/login");
+                  }, 1500);
                 }
                 return;
               }
@@ -152,14 +164,14 @@ export default function MyChandlaScreen() {
               onPress={() => setShowSortModal(true)}
             >
               <Ionicons name="swap-vertical-outline" size={18} color="#000" />
-              <Text style={styles.sortButtonText}>Sort</Text>
+              <Text style={styles.sortButtonText}>{t("sort")}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.sortButton}
               onPress={handleExportPDF}
             >
               <Ionicons name="document-text-outline" size={18} color="#000" />
-              <Text style={styles.sortButtonText}>Export</Text>
+              <Text style={styles.sortButtonText}>{t("export")}</Text>
             </TouchableOpacity>
           </View>
 
@@ -227,12 +239,23 @@ export default function MyChandlaScreen() {
             onPress={() => {
               if (!user) {
                 if (Platform.OS === 'web') {
-                  if (window.confirm("Login Required\n\nYou need to login to add shagun.")) router.push("/login");
+                  Toast.show({
+                    type: "info",
+                    text1: t("login_required"),
+                    text2: t("login_to_continue"),
+                  });
+                  setTimeout(() => {
+                    router.push("/login");
+                  }, 1500);
                 } else {
-                  Alert.alert("Login Required", "You need to login to add shagun.", [
-                    { text: "Cancel", style: "cancel" },
-                    { text: "Login", onPress: () => router.push("/login") }
-                  ]);
+                  Toast.show({
+                    type: "info",
+                    text1: t("login_required"),
+                    text2: t("login_to_continue"),
+                  });
+                  setTimeout(() => {
+                    router.push("/login");
+                  }, 1500);
                 }
                 return;
               }
@@ -259,7 +282,7 @@ export default function MyChandlaScreen() {
           />
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Sort By</Text>
+              <Text style={styles.modalTitle}>{t("sort_by")}</Text>
               <TouchableOpacity onPress={() => setShowSortModal(false)}>
                 <Ionicons name="close" size={24} color="#000" />
               </TouchableOpacity>
@@ -267,10 +290,10 @@ export default function MyChandlaScreen() {
 
             <ScrollView style={styles.modalScrollView} showsVerticalScrollIndicator={false}>
               <View style={styles.sortOption}>
-                <Text style={styles.sortOptionLabel}>Name</Text>
+                <Text style={styles.sortOptionLabel}>{t("name")}</Text>
                 <TextInput
                   style={[styles.sortInput, Platform.OS === 'web' && ({ outlineStyle: 'none' } as any)]}
-                  placeholder="Name"
+                  placeholder={t("name")}
                   placeholderTextColor="#999"
                   value={sortName}
                   onChangeText={setSortName}
@@ -297,13 +320,13 @@ export default function MyChandlaScreen() {
                 style={styles.resetButton}
                 onPress={handleReset}
               >
-                <Text style={styles.resetButtonText}>Reset</Text>
+                <Text style={styles.resetButtonText}>{t("reset")}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.nextButton}
                 onPress={handleNext}
               >
-                <Text style={styles.nextButtonText}>Next</Text>
+                <Text style={styles.nextButtonText}>{t("next")}</Text>
               </TouchableOpacity>
             </View>
           </View>

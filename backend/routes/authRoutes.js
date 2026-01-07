@@ -14,5 +14,6 @@ router.post('/upgrade', protect, upgradeToPremium);
 router.get('/me', protect, getMe);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
+router.put('/update-profile', protect, require('../controllers/authController').updateUserProfile);
 
 module.exports = router;

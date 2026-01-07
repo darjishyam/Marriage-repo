@@ -1,11 +1,13 @@
 import CustomHeader from "@/components/CustomHeader";
 import ScreenWrapper from "@/components/ScreenWrapper";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Linking, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function ContactUsScreen() {
     const router = useRouter();
+    const { t } = useLanguage();
 
     const handleEmail = () => {
         Linking.openURL("mailto:info@bytesved.com");
@@ -21,7 +23,7 @@ export default function ContactUsScreen() {
 
     return (
         <ScreenWrapper>
-            <CustomHeader title="Contact Us" />
+            <CustomHeader title={t("contact_us")} />
 
             <ScrollView
                 style={styles.scrollView}
@@ -29,7 +31,7 @@ export default function ContactUsScreen() {
                 showsVerticalScrollIndicator={false}
             >
                 <Text style={styles.subtitle}>
-                    We're here to help! Reach out to us via any of the following channels.
+                    {t("contact_us_subtitle")}
                 </Text>
 
                 {/* Support Email Card */}
@@ -39,7 +41,7 @@ export default function ContactUsScreen() {
                             <Ionicons name="mail-outline" size={24} color="#000" />
                         </View>
                         <View style={styles.textContainer}>
-                            <Text style={styles.cardTitle}>Email Support</Text>
+                            <Text style={styles.cardTitle}>{t("email_support")}</Text>
                             <Text style={styles.cardSubtitle}>info@bytesved.com</Text>
                         </View>
                     </View>
@@ -53,7 +55,7 @@ export default function ContactUsScreen() {
                             <Ionicons name="call-outline" size={24} color="#000" />
                         </View>
                         <View style={styles.textContainer}>
-                            <Text style={styles.cardTitle}>Call Us</Text>
+                            <Text style={styles.cardTitle}>{t("call_us")}</Text>
                             <Text style={styles.cardSubtitle}>+91 90160 46068</Text>
                         </View>
                     </View>
@@ -67,9 +69,9 @@ export default function ContactUsScreen() {
                             <Ionicons name="location-outline" size={24} color="#000" />
                         </View>
                         <View style={styles.textContainer}>
-                            <Text style={styles.cardTitle}>Office Address</Text>
+                            <Text style={styles.cardTitle}>{t("office_address_title")}</Text>
                             <Text style={styles.cardSubtitle}>
-                                A-507, The Landmark, Kudasan, Gandhinagar, Gujarat, 382421
+                                {t("office_address_value")}
                             </Text>
                         </View>
                     </View>
@@ -82,7 +84,7 @@ export default function ContactUsScreen() {
                             <Ionicons name="globe-outline" size={24} color="#000" />
                         </View>
                         <View style={styles.textContainer}>
-                            <Text style={styles.cardTitle}>Visit Website</Text>
+                            <Text style={styles.cardTitle}>{t("visit_website")}</Text>
                             <Text style={styles.cardSubtitle}>https://bytesved.com/</Text>
                         </View>
                     </View>

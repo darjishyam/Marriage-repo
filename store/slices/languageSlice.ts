@@ -98,6 +98,7 @@ export const translations = {
         // Add Expense
         "add_new_expense": "Add New Expense",
         "expense_for": "Expense For",
+        "total_amount": "Total Amount",
         "paid_deposit_amount": "Paid Deposit Amount",
         "pending_amount": "Pending Amount",
         "enter_title_amount": "Please enter title and amount",
@@ -105,6 +106,9 @@ export const translations = {
         "paid_amount_error": "Paid amount cannot be greater than total amount",
         "expense_added_success": "Expense added successfully",
         "failed_add_expense": "Failed to add expense",
+        "expense_updated_success": "Expense updated successfully",
+        "edit_expense": "Edit Expense",
+        "update": "Update",
 
         // Footer
         "my_wedding": "My Wedding",
@@ -122,6 +126,36 @@ export const translations = {
         "per_month": "month",
         "pay_apple": "Pay with Apple",
         "purchase_terms": "By purchasing, you agree to our Terms of Service and Privacy Policy. Subscription will auto-renew unless cancelled.",
+        "save_25_percent": "Save 25%",
+        "premium_active": "Premium Active",
+        "login_required": "Login Required",
+        "login_to_continue": "Please login to continue.",
+        "login_required_msg": "Please login to purchase premium.",
+        "premium_success_msg": "You are now a Premium Member! Proceed to use export to PDF.",
+        "upgrade_failed_msg": "Upgrade failed. Please try again.",
+        "processing": "Processing...",
+        "upgrade_button_text": "Upgrade to Premium (₹120)",
+        "demo_premium_msg": "You are now a Premium Member! Proceed to use export to PDF. (Demo Mode)",
+        "premium_feature_title": "Premium Feature",
+        "premium_export_msg": "Exporting shagun book to PDF is a premium feature. Upgrade to unlock!",
+        "upgrade": "Upgrade",
+
+        // Common
+        "permission_denied": "Permission Denied",
+        "permission_denied_msg": "Permission to access media library is required.",
+        "tap_to_upload": "Tap to upload",
+        "unknown_error": "Unknown Error",
+        "account_deleted_success": "Account deleted successfully",
+        "failed_delete_account": "Failed to delete account",
+        "coming_soon": "Coming Soon",
+        "sort_by": "Sort By",
+        "reset": "Reset",
+        "next": "Next",
+        "sort": "Sort",
+        "high": "High",
+        "low": "Low",
+        "export": "Export",
+        "wishes_placeholder": "Best wishes for your marriage!",
 
         // Login
         "log_in": "Log In",
@@ -153,6 +187,8 @@ export const translations = {
         "weak_password": "Weak Password",
         "password_requirements": "Password must be at least 8 characters long and include an uppercase letter, a number, and a special character.",
         "signup_failed": "Signup Failed",
+        "account_already_exists": "Account Already Exists",
+        "account_exists_msg": "User already exists. Please login.",
 
         // Create Wedding
         "add_new_wedding": "Add New Wedding",
@@ -186,6 +222,14 @@ export const translations = {
         "terms_8_text": "Shagun may revise these terms of service at any time without notice.",
         "terms_9_title": "9. Contact Information",
         "terms_9_text": "If you have any questions about these Terms of Service, please contact us.",
+
+        // Contact Us Screen
+        "contact_us_subtitle": "We're here to help! Reach out to us via any of the following channels.",
+        "email_support": "Email Support",
+        "call_us": "Call Us",
+        "office_address_title": "Office Address",
+        "office_address_value": "A-507, The Landmark, Kudasan, Gandhinagar, Gujarat, 382421",
+        "visit_website": "Visit Website",
 
         // Onboarding
         "onboarding_title_1": "Say goodbye to physical chandla book",
@@ -278,6 +322,7 @@ export const translations = {
         // Add Expense
         "add_new_expense": "નવો ખર્ચ ઉમેરો",
         "expense_for": "ખર્ચ શેના માટે",
+        "total_amount": "કુલ ખર્ચ",
         "paid_deposit_amount": "ચૂકવેલ જમા રકમ",
         "pending_amount": "બાકી રકમ",
         "enter_title_amount": "કૃપા કરીને શીર્ષક અને રકમ દાખલ કરો",
@@ -285,6 +330,9 @@ export const translations = {
         "paid_amount_error": "ચૂકવેલ રકમ કુલ રકમ કરતાં વધુ ન હોઈ શકે",
         "expense_added_success": "ખર્ચ સફળતાપૂર્વક ઉમેરવામાં આવ્યો",
         "failed_add_expense": "ખર્ચ ઉમેરવામાં નિષ્ફળ",
+        "expense_updated_success": "ખર્ચ સફળતાપૂર્વક અપડેટ થયો",
+        "edit_expense": "ખર્ચ સંપાદિત કરો",
+        "update": "અપડેટ કરો",
 
         // Footer
         "my_wedding": "મારા લગ્ન",
@@ -302,6 +350,36 @@ export const translations = {
         "per_month": "મહિના",
         "pay_apple": "Apple સાથે ચૂકવણી કરો",
         "purchase_terms": "ખરીદી કરીને, તમે અમારી સેવાની શરતો અને ગોપનીયતા નીતિ સાથે સંમત થાઓ છો. રદ કર્યા સિવાય સબ્સ્ક્રિપ્શન આપમેળે નવીન થશે.",
+        "save_25_percent": "25% બચાવો",
+        "premium_active": "પ્રીમિયમ સક્રિય",
+        "login_required": "લૉગિન જરૂરી",
+        "login_to_continue": "ચાલુ રાખવા માટે કૃપા કરીને લૉગિન કરો.",
+        "login_required_msg": "પ્રીમિયમ ખરીદવા માટે કૃપા કરીને લૉગિન કરો.",
+        "premium_success_msg": "તમે હવે પ્રીમિયમ સભ્ય છો! પીડીએફમાં એક્સપોર્ટ કરવા માટે આગળ વધો.",
+        "upgrade_failed_msg": "અપગ્રેડ નિષ્ફળ. કૃપા કરીને ફરી પ્રયાસ કરો.",
+        "processing": "પ્રક્રિયા કરી રહ્યું છે...",
+        "upgrade_button_text": "પ્રીમિયમમાં અપગ્રેડ કરો (₹120)",
+        "demo_premium_msg": "તમે હવે પ્રીમિયમ સભ્ય છો! પીડીએફમાં એક્સપોર્ટ કરવા માટે આગળ વધો. (ડેમો મોડ)",
+        "premium_feature_title": "પ્રીમિયમ સુવિધા",
+        "premium_export_msg": "શગુન બુક પીડીએફમાં એક્સપોર્ટ કરવી એ પ્રીમિયમ સુવિધા છે. અનલૉક કરવા માટે અપગ્રેડ કરો!",
+        "upgrade": "અપગ્રેડ",
+
+        // Common
+        "permission_denied": "પરવાનગી નકારી",
+        "permission_denied_msg": "મીડિયા લાઇબ્રેરી ઍક્સેસ કરવા માટે પરવાનગી જરૂરી છે.",
+        "tap_to_upload": "અપલોડ કરવા માટે ટેપ કરો",
+        "unknown_error": "અજાણી ભૂલ",
+        "account_deleted_success": "ખાતું સફળતાપૂર્વક કાઢી નાખવામાં આવ્યું",
+        "failed_delete_account": "ખાતું કાઢી નાખવામાં નિષ્ફળ",
+        "coming_soon": "આવી રહ્યું છે",
+        "sort_by": "તારીખ દ્વારા",
+        "reset": "રીસેટ",
+        "next": "આગળ",
+        "sort": "સૉર્ટ",
+        "high": "વધુ",
+        "low": "ઓછું",
+        "export": "એક્સપોર્ટ",
+        "wishes_placeholder": "તમારા લગ્ન જીવન માટે શ્રેષ્ઠ શુભેચ્છાઓ!",
 
         // Login
         "log_in": "લૉગ ઇન",
@@ -333,6 +411,8 @@ export const translations = {
         "weak_password": "નબળો પાસવર્ડ",
         "password_requirements": "પાસવર્ડ ઓછામાં ઓછો 8 અક્ષરોનો હોવો જોઈએ અને તેમાં એક કેપિટલ અક્ષર, એક નંબર અને વિશેષ અક્ષર શામેલ હોવો જોઈએ.",
         "signup_failed": "સાઇન અપ નિષ્ફળ",
+        "account_already_exists": "ખાતું પહેલેથી જ અસ્તિત્વમાં છે",
+        "account_exists_msg": "વપરાશકર્તા પહેલાથી અસ્તિત્વમાં છે. કૃપા કરીને લૉગિન કરો.",
 
         // Create Wedding
         "add_new_wedding": "નવા લગ્ન ઉમેરો",
@@ -366,6 +446,14 @@ export const translations = {
         "terms_8_text": "શગુન કોઈપણ સમયે સૂચના આપ્યા વિના આ સેવાની શરતોમાં સુધારો કરી શકે છે.",
         "terms_9_title": "9. સંપર્ક માહિતી",
         "terms_9_text": "જો તમને આ સેવાની શરતો વિશે કોઈ પ્રશ્નો હોય, તો કૃપા કરીને અમારો સંપર્ક કરો.",
+
+        // Contact Us Screen
+        "contact_us_subtitle": "અમે મદદ કરવા માટે અહીં છીએ! નીચેના કોઈપણ માધ્યમ દ્વારા અમારો સંપર્ક કરો.",
+        "email_support": "ઈમેલ સપોર્ટ",
+        "call_us": "અમને કૉલ કરો",
+        "office_address_title": "ઓફિસ સરનામું",
+        "office_address_value": "A-507, ધ લેન્ડમાર્ક, કુડાસણ, ગાંધીનગર, ગુજરાત, 382421",
+        "visit_website": "વેબસાઇટની મુલાકાત લો",
 
         // Onboarding
         "onboarding_title_1": "ભૌતિક ચાંદલા બુકને કહો અલવિદા",

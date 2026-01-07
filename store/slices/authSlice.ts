@@ -9,6 +9,7 @@ export interface User {
     email: string;
     mobile: string;
     isPremium?: boolean;
+    profileImage?: string;
 }
 
 interface AuthState {
@@ -242,6 +243,20 @@ export const resetPassword = createAsyncThunk(
     }
 );
 
+export const updateUserProfile = createAsyncThunk(
+    'auth/updateUserProfile',
+    async ({ profileImage }: { profileImage: string }, { rejectWithValue }) => {
+        try {
+            const response = await api.put('/auth/update-profile', { profileImage });
+            const userData = response.data;
+            await AsyncStorage.setItem('userInfo', JSON.stringify(userData));
+            return userData;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to update profile');
+        }
+    }
+);
+
 const authSlice = createSlice({
     name: 'auth',
     initialState,
@@ -348,6 +363,10 @@ const authSlice = createSlice({
             .addCase(signInWithApple.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload as string;
+            })
+            // Update User Profile
+            .addCase(updateUserProfile.fulfilled, (state, action) => {
+                state.user = action.payload; // Update user state with new image
             });
     },
 });

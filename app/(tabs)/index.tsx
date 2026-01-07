@@ -12,6 +12,7 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Dimensions, Image, KeyboardAvoidingView, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -51,19 +52,23 @@ export default function MyWeddingScreen() {
             onPress={() => {
               if (!user) {
                 if (Platform.OS === 'web') {
-                  const choice = window.confirm("Login Required\n\nYou need to login to create a wedding.");
-                  if (choice) {
+                  Toast.show({
+                    type: "info",
+                    text1: t("login_required"),
+                    text2: t("login_to_continue"),
+                  });
+                  setTimeout(() => {
                     router.push("/login");
-                  }
+                  }, 1500);
                 } else {
-                  Alert.alert(
-                    "Login Required",
-                    "You need to login to create a wedding.",
-                    [
-                      { text: "Cancel", style: "cancel" },
-                      { text: "Login", onPress: () => router.push("/login") }
-                    ]
-                  );
+                  Toast.show({
+                    type: "info",
+                    text1: t("login_required"),
+                    text2: t("login_to_continue"),
+                  });
+                  setTimeout(() => {
+                    router.push("/login");
+                  }, 1500);
                 }
                 return;
               }

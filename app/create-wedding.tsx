@@ -94,7 +94,7 @@ export default function CreateWeddingScreen() {
         router.replace("/(tabs)");
       } catch (error: any) {
         console.error("Create wedding error full object:", error);
-        const errorMessage = error.response?.data?.message || error.message || "Unknown error";
+        const errorMessage = error.response?.data?.message || error.message || t("unknown_error");
         Toast.show({
           type: "error",
           text1: t("failed_create_wedding"),
@@ -103,6 +103,12 @@ export default function CreateWeddingScreen() {
       } finally {
         setIsSaving(false);
       }
+    } else {
+      Toast.show({
+        type: "error",
+        text1: t("error"),
+        text2: t("all_fields_mandatory"),
+      });
     }
   };
 

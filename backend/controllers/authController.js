@@ -57,6 +57,10 @@ const registerUser = async (req, res) => {
                     mobile: user.mobile,
                     token: generateToken(user.id),
                     isPremium: user.isPremium,
+                    mobile: user.mobile,
+                    token: generateToken(user.id),
+                    isPremium: user.isPremium,
+                    profileImage: user.profileImage,
                     message: 'User registered successfully via Firebase'
                 });
             }
@@ -176,6 +180,9 @@ const verifyOtp = async (req, res) => {
                 email: user.email,
                 token: generateToken(user.id),
                 isPremium: user.isPremium,
+                token: generateToken(user.id),
+                isPremium: user.isPremium,
+                profileImage: user.profileImage,
             });
         }
 
@@ -194,6 +201,9 @@ const verifyOtp = async (req, res) => {
             email: user.email,
             token: generateToken(user.id),
             isPremium: user.isPremium,
+            token: generateToken(user.id),
+            isPremium: user.isPremium,
+            profileImage: user.profileImage,
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -238,6 +248,9 @@ const loginUser = async (req, res) => {
                 email: user.email,
                 token: generateToken(user.id),
                 isPremium: user.isPremium,
+                token: generateToken(user.id),
+                isPremium: user.isPremium,
+                profileImage: user.profileImage,
             });
         } else {
             console.log('Login Failed: Password Mismatch');
@@ -297,6 +310,8 @@ const getMe = async (req, res) => {
                 email: user.email,
                 mobile: user.mobile,
                 isPremium: user.isPremium,
+                isPremium: user.isPremium,
+                profileImage: user.profileImage,
                 // Add any other fields needed
             });
         } else {
@@ -325,6 +340,9 @@ const googleLogin = async (req, res) => {
                 mobile: user.mobile,
                 token: generateToken(user.id),
                 isPremium: user.isPremium,
+                token: generateToken(user.id),
+                isPremium: user.isPremium,
+                profileImage: user.profileImage,
             });
         } else {
             // User does not exist
@@ -361,6 +379,8 @@ const facebookLogin = async (req, res) => {
                 mobile: user.mobile,
                 token: generateToken(user.id),
                 isPremium: user.isPremium,
+                isPremium: user.isPremium,
+                profileImage: user.profileImage,
             });
         } else {
             // User does not exist
@@ -397,6 +417,8 @@ const appleLogin = async (req, res) => {
                 mobile: user.mobile,
                 token: generateToken(user.id),
                 isPremium: user.isPremium,
+                isPremium: user.isPremium,
+                profileImage: user.profileImage,
             });
         } else {
             // User does not exist
@@ -510,4 +532,36 @@ const resetPassword = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, verifyOtp, deleteAccount, upgradeToPremium, getMe, googleLogin, facebookLogin, appleLogin, forgotPassword, resetPassword };
+// @desc    Update user profile (e.g. image)
+// @route   PUT /api/auth/update-profile
+// @access  Private
+const updateUserProfile = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const { profileImage } = req.body;
+
+        const user = await User.findById(userId);
+
+        if (user) {
+            user.profileImage = profileImage || user.profileImage;
+
+            const updatedUser = await user.save();
+
+            res.json({
+                _id: updatedUser._id,
+                name: updatedUser.name,
+                email: updatedUser.email,
+                mobile: updatedUser.mobile,
+                profileImage: updatedUser.profileImage,
+                isPremium: updatedUser.isPremium,
+                token: generateToken(updatedUser._id),
+            });
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { registerUser, loginUser, verifyOtp, deleteAccount, upgradeToPremium, getMe, googleLogin, facebookLogin, appleLogin, forgotPassword, resetPassword, updateUserProfile };

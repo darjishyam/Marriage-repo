@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
@@ -86,12 +86,20 @@ export default function OtpScreen() {
       // Verify OTP with backend (which also logs user in and returns token)
       await verifyOtp(mobile, otp);
 
-      Alert.alert("Success", "Verified and Registered successfully!");
+      Toast.show({
+        type: "success",
+        text1: "Registration Successful",
+        text2: "Welcome to Shagun!",
+      });
       router.replace('/(tabs)');
     } catch (error: any) {
       console.error("Verification Error:", error);
       const errorMessage = error.response?.data?.message || "Invalid or expired OTP";
-      Alert.alert("Verification Failed", errorMessage);
+      Toast.show({
+        type: "error",
+        text1: "Verification Failed",
+        text2: errorMessage,
+      });
     } finally {
       setLoading(false);
     }
