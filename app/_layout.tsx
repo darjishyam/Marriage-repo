@@ -45,6 +45,8 @@ export default function RootLayout() {
             <Stack.Screen name="terms-of-service" />
             <Stack.Screen name="delete-account" />
             <Stack.Screen name="contact-us" />
+            <Stack.Screen name="forgot-password" />
+            <Stack.Screen name="reset-password" />
 
             {/* Tabs - Home page */}
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

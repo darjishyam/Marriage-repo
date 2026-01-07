@@ -26,9 +26,11 @@ const initialState: ShagunState = {
     error: null,
 };
 
-export const fetchShaguns = createAsyncThunk('shagun/fetchShaguns', async (_, { rejectWithValue }) => {
+export const fetchShaguns = createAsyncThunk('shagun/fetchShaguns', async (_, { getState, rejectWithValue }) => {
     try {
-        const response = await api.get('/shagun');
+        const state: any = getState();
+        const weddingId = state.wedding?.weddingData?._id;
+        const response = await api.get(`/shagun?weddingId=${weddingId || ''}`);
         // Map _id to id if component expects id
         return response.data.map((item: any) => ({ ...item, id: item._id }));
     } catch (error: any) {
@@ -51,6 +53,15 @@ export const deleteShagun = createAsyncThunk('shagun/deleteShagun', async (id: s
         return id;
     } catch (error: any) {
         return rejectWithValue(error.response?.data?.message || 'Failed to delete shagun');
+    }
+});
+
+export const updateShagun = createAsyncThunk('shagun/updateShagun', async ({ id, data }: { id: string; data: Partial<ShagunEntry> }, { rejectWithValue }) => {
+    try {
+        const response = await api.put(`/shagun/${id}`, data);
+        return { ...response.data, id: response.data._id };
+    } catch (error: any) {
+        return rejectWithValue(error.response?.data?.message || 'Failed to update shagun');
     }
 });
 
@@ -86,6 +97,13 @@ const shagunSlice = createSlice({
             // Delete
             .addCase(deleteShagun.fulfilled, (state, action) => {
                 state.shagunEntries = state.shagunEntries.filter(e => e.id !== action.payload);
+            })
+            // Update
+            .addCase(updateShagun.fulfilled, (state, action) => {
+                const index = state.shagunEntries.findIndex(e => e.id === action.payload.id);
+                if (index !== -1) {
+                    state.shagunEntries[index] = action.payload;
+                }
             });
     },
 });

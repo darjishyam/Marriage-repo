@@ -2,7 +2,8 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
   addShagun as addShagunAction,
-  deleteShagun as deleteShagunAction
+  deleteShagun as deleteShagunAction,
+  updateShagun as updateShagunAction
 } from '../store/slices/shagunSlice';
 
 export function useShagun() {
@@ -17,10 +18,15 @@ export function useShagun() {
     await dispatch(deleteShagunAction(id)).unwrap();
   };
 
+  const updateShagun = async (id: string, data: any) => {
+    await dispatch(updateShagunAction({ id, data })).unwrap();
+  };
+
   return {
     shagunEntries,
     addShagun,
-    deleteShagun
+    deleteShagun,
+    updateShagun
   };
 }
 

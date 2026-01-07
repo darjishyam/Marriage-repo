@@ -35,9 +35,11 @@ export default function ShagunCard({ name, date, amount, wishes, onPress }: Shag
                     </View>
                     <Text style={styles.cardTitle}>{name}</Text>
                 </View>
-                <TouchableOpacity onPress={onPress}>
-                    <Ionicons name="ellipsis-vertical" size={20} color="#000" />
-                </TouchableOpacity>
+                <View style={{ flexDirection: 'row', gap: 8 }}>
+                    <TouchableOpacity onPress={onPress}>
+                        <Ionicons name="pencil" size={20} color="#000" />
+                    </TouchableOpacity>
+                </View>
             </View>
 
             {/* Stats */}

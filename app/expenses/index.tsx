@@ -102,7 +102,12 @@ export default function ExpenseListScreen() {
                             <Text style={styles.expenseTitle}>{expense.title}</Text>
                             <Text style={styles.expenseCategory}>{expense.category} • {formatDate(expense.date)}</Text>
                         </View>
-                        <Text style={styles.expenseAmount}>₹ {expense.amount.toLocaleString()}</Text>
+                        <View style={{ alignItems: 'flex-end', gap: 4 }}>
+                            <Text style={styles.expenseAmount}>₹ {expense.amount.toLocaleString()}</Text>
+                            <TouchableOpacity onPress={() => router.push({ pathname: "/expenses/add-expense", params: { id: expense._id } })}>
+                                <Ionicons name="pencil" size={18} color="#666" />
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 ))}
             </ScrollView>

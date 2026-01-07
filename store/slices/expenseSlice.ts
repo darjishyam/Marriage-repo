@@ -22,9 +22,11 @@ const initialState: ExpenseState = {
     error: null,
 };
 
-export const fetchExpenses = createAsyncThunk('expense/fetchExpenses', async (_, { rejectWithValue }) => {
+export const fetchExpenses = createAsyncThunk('expense/fetchExpenses', async (_, { getState, rejectWithValue }) => {
     try {
-        const response = await api.get('/expenses');
+        const state: any = getState();
+        const weddingId = state.wedding?.weddingData?._id;
+        const response = await api.get(`/expenses?weddingId=${weddingId || ''}`);
         return response.data;
     } catch (error: any) {
         return rejectWithValue(error.response?.data?.message || 'Failed to fetch expenses');
@@ -43,6 +45,15 @@ export const addExpense = createAsyncThunk('expense/addExpense', async (data: {
         return response.data;
     } catch (error: any) {
         return rejectWithValue(error.response?.data?.message || 'Failed to add expense');
+    }
+});
+
+export const updateExpense = createAsyncThunk('expense/updateExpense', async ({ id, data }: { id: string; data: Partial<Expense> }, { rejectWithValue }) => {
+    try {
+        const response = await api.put(`/expenses/${id}`, data);
+        return response.data;
+    } catch (error: any) {
+        return rejectWithValue(error.response?.data?.message || 'Failed to update expense');
     }
 });
 
@@ -72,6 +83,12 @@ const expenseSlice = createSlice({
             })
             .addCase(addExpense.fulfilled, (state, action) => {
                 state.expenses.push(action.payload);
+            })
+            .addCase(updateExpense.fulfilled, (state, action) => {
+                const index = state.expenses.findIndex(e => e._id === action.payload._id);
+                if (index !== -1) {
+                    state.expenses[index] = action.payload;
+                }
             });
     },
 });

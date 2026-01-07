@@ -23,9 +23,11 @@ const initialState: GuestState = {
 
 // Async Thunks
 
-export const fetchGuests = createAsyncThunk('guest/fetchGuests', async (_, { rejectWithValue }) => {
+export const fetchGuests = createAsyncThunk('guest/fetchGuests', async (_, { getState, rejectWithValue }) => {
     try {
-        const response = await api.get('/guests');
+        const state: any = getState();
+        const weddingId = state.wedding?.weddingData?._id;
+        const response = await api.get(`/guests?weddingId=${weddingId || ''}`);
         return response.data;
     } catch (error: any) {
         return rejectWithValue(error.response?.data?.message || 'Failed to fetch guests');
@@ -62,6 +64,26 @@ export const updateGuestStatus = createAsyncThunk(
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || 'Failed to update guest status');
+        }
+    }
+);
+
+export const updateGuest = createAsyncThunk(
+    'guest/updateGuest',
+    async (
+        { id, data }: { id: string; data: { name?: string; count?: number; city?: string } },
+        { rejectWithValue }
+    ) => {
+        try {
+            const response = await api.put(`/guests/${id}`, {
+                ...data,
+                // Map frontend names to backend names if needed (e.g. count -> familyCount)
+                familyCount: data.count,
+                cityVillage: data.city
+            });
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to update guest');
         }
     }
 );
@@ -107,6 +129,13 @@ const guestSlice = createSlice({
             })
             // Update Guest Status
             .addCase(updateGuestStatus.fulfilled, (state, action) => {
+                const index = state.guests.findIndex((g) => g._id === action.payload._id);
+                if (index !== -1) {
+                    state.guests[index] = action.payload;
+                }
+            })
+            // Update Guest Details
+            .addCase(updateGuest.fulfilled, (state, action) => {
                 const index = state.guests.findIndex((g) => g._id === action.payload._id);
                 if (index !== -1) {
                     state.guests[index] = action.payload;

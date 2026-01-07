@@ -33,16 +33,45 @@ const addExpense = async (req, res) => {
 // @access  Private
 const getExpenses = async (req, res) => {
     try {
-        const wedding = await Wedding.findOne({ user: req.user._id });
-        if (!wedding) {
-            return res.json([]);
+        let weddingId = req.query.weddingId;
+
+        if (!weddingId) {
+            const wedding = await Wedding.findOne({ user: req.user._id });
+            if (!wedding) {
+                return res.json([]);
+            }
+            weddingId = wedding._id;
         }
 
-        const expenses = await Expense.find({ wedding: wedding._id });
+        const expenses = await Expense.find({ wedding: weddingId });
         res.json(expenses);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
-module.exports = { addExpense, getExpenses };
+// @desc    Update an expense
+// @route   PUT /api/expenses/:id
+// @access  Private
+const updateExpense = async (req, res) => {
+    try {
+        const expense = await Expense.findById(req.params.id);
+
+        if (expense) {
+            expense.title = req.body.title || expense.title;
+            expense.amount = req.body.amount || expense.amount;
+            expense.paidAmount = req.body.paidAmount !== undefined ? req.body.paidAmount : expense.paidAmount;
+            expense.category = req.body.category || expense.category;
+            expense.date = req.body.date || expense.date;
+
+            const updatedExpense = await expense.save();
+            res.json(updatedExpense);
+        } else {
+            res.status(404).json({ message: 'Expense not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { addExpense, getExpenses, updateExpense };

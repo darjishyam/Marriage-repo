@@ -5,6 +5,7 @@ import ScreenWrapper from "@/components/ScreenWrapper";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { FontAwesome } from "@expo/vector-icons";
+import * as AppleAuthentication from 'expo-apple-authentication';
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -12,7 +13,7 @@ import Toast from "react-native-toast-message";
 
 export default function SignupScreen() {
   const router = useRouter();
-  const { register, signInWithGoogle, signInWithFacebook } = useAuth();
+  const { register, signInWithGoogle, signInWithFacebook, signInWithApple } = useAuth();
   const { t } = useLanguage();
 
   const [name, setName] = useState("");
@@ -129,6 +130,21 @@ export default function SignupScreen() {
     }
   };
 
+  const handleAppleLogin = async () => {
+    try {
+      await signInWithApple();
+      router.replace("/(tabs)");
+    } catch (error: any) {
+      if (error === 'Cancelled') return;
+      console.error("Apple Sign-In Error:", error);
+      Toast.show({
+        type: "error",
+        text1: "Apple Login Failed",
+        text2: error.message || "Something went wrong",
+      });
+    }
+  };
+
   const handleGoogleLogin = async () => {
     try {
       await signInWithGoogle();
@@ -204,10 +220,21 @@ export default function SignupScreen() {
         <Text style={styles.divider}>OR</Text>
 
         {/* Apple */}
-        <TouchableOpacity style={styles.socialButton} onPress={() => Toast.show({ type: "info", text1: "Coming Soon", text2: "Apple Sign-In will be available soon!" })}>
-          <FontAwesome name="apple" size={22} color="black" style={{ marginRight: 10 }} />
-          <Text style={styles.socialText}>{t("continue_apple") || "Continue with Apple"}</Text>
-        </TouchableOpacity>
+        {Platform.OS === 'ios' && (
+          <AppleAuthentication.AppleAuthenticationButton
+            buttonType={AppleAuthentication.AppleAuthenticationButtonType.CONTINUE}
+            buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+            cornerRadius={30}
+            style={{ width: '100%', height: 50, marginBottom: 12 }}
+            onPress={handleAppleLogin}
+          />
+        )}
+        {Platform.OS === 'web' && (
+          <TouchableOpacity style={[styles.socialButton, { borderColor: 'black' }]} onPress={handleAppleLogin}>
+            <FontAwesome name="apple" size={22} color="white" style={{ marginRight: 10 }} />
+            <Text style={[styles.socialText, { color: 'white' }]}>{t("continue_apple") || "Continue with Apple"}</Text>
+          </TouchableOpacity>
+        )}
 
         {/* Google */}
         <TouchableOpacity style={styles.socialButton} onPress={handleGoogleLogin}>

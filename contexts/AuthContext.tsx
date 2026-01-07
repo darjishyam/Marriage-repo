@@ -2,10 +2,13 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
     deleteAccount as deleteAccountAction,
+    forgotPassword as forgotPasswordAction,
     login as loginAction,
     logout as logoutAction,
     register as registerAction,
     reloadUser as reloadUserAction,
+    resetPassword as resetPasswordAction,
+    signInWithApple as signInWithAppleAction,
     signInWithFacebook as signInWithFacebookAction,
     signInWithGoogle as signInWithGoogleAction,
     verifyOtp as verifyOtpAction
@@ -49,6 +52,18 @@ export function useAuth() {
         await dispatch(signInWithFacebookAction()).unwrap();
     };
 
+    const signInWithApple = async () => {
+        await dispatch(signInWithAppleAction()).unwrap();
+    };
+
+    const forgotPassword = async (email: string) => {
+        await dispatch(forgotPasswordAction({ email })).unwrap();
+    };
+
+    const resetPassword = async (token: string, password: string) => {
+        return await dispatch(resetPasswordAction({ token, password })).unwrap();
+    };
+
     return {
         user,
         isLoading,
@@ -60,7 +75,10 @@ export function useAuth() {
         reloadUser,
         deleteAccount,
         signInWithGoogle,
-        signInWithFacebook
+        signInWithFacebook,
+        signInWithApple,
+        forgotPassword,
+        resetPassword
     };
 }
 

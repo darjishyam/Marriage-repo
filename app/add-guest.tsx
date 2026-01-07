@@ -5,19 +5,34 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useGuest } from "@/contexts/GuestContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 
 export default function AddGuestScreen() {
   const router = useRouter();
-  const { addGuest } = useGuest();
+  const params = useLocalSearchParams();
+  const { id } = params;
+  const isEdit = !!id;
+
+  const { addGuest, guests, updateGuest } = useGuest();
   const { t } = useLanguage();
 
   const [name, setName] = useState("");
   const [totalFamilyCount, setTotalFamilyCount] = useState("");
   const [cityVillage, setCityVillage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (isEdit && guests) {
+      const guest = guests.find((g: any) => g._id === id);
+      if (guest) {
+        setName(guest.name);
+        setTotalFamilyCount(guest.familyCount.toString());
+        setCityVillage(guest.cityVillage);
+      }
+    }
+  }, [id, guests]);
 
   const resetForm = () => {
     setName("");
@@ -37,14 +52,24 @@ export default function AddGuestScreen() {
 
     setLoading(true);
     try {
-      await addGuest(name, parseInt(totalFamilyCount), cityVillage);
-      Toast.show({
-        type: "success",
-        text1: t("success"),
-        text2: t("guest_added_success"),
-      });
-      if (shouldGoBack) {
-        // Redirect to Home Page as requested
+      if (isEdit) {
+        await updateGuest(id as string, { name, count: parseInt(totalFamilyCount), city: cityVillage });
+        Toast.show({
+          type: "success",
+          text1: t("success"),
+          text2: t("guest_updated_success") || "Guest updated successfully",
+        });
+      } else {
+        await addGuest(name, parseInt(totalFamilyCount), cityVillage);
+        Toast.show({
+          type: "success",
+          text1: t("success"),
+          text2: t("guest_added_success"),
+        });
+      }
+
+      if (shouldGoBack || isEdit) {
+        // Redirect to Home Page or Back as requested
         router.navigate("/(tabs)");
       } else {
         resetForm();
@@ -79,7 +104,7 @@ export default function AddGuestScreen() {
           >
             <Ionicons name="arrow-back" size={24} color="#000" />
           </TouchableOpacity>
-          <Text style={styles.navTitle}>{t("add_new_guest")}</Text>
+          <Text style={styles.navTitle}>{isEdit ? t("edit_guest") || "Edit Guest" : t("add_new_guest")}</Text>
           <View style={styles.placeholder} />
         </View>
 
@@ -130,20 +155,22 @@ export default function AddGuestScreen() {
 
         {/* Action Buttons */}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.saveAndAddButton, loading && { opacity: 0.7 }]}
-            onPress={handleSaveAndAddAnother}
-            disabled={loading}
-          >
-            <Text style={styles.saveAndAddButtonText}>{t("save_and_add_another")}</Text>
-          </TouchableOpacity>
+          {!isEdit && (
+            <TouchableOpacity
+              style={[styles.saveAndAddButton, loading && { opacity: 0.7 }]}
+              onPress={handleSaveAndAddAnother}
+              disabled={loading}
+            >
+              <Text style={styles.saveAndAddButtonText}>{t("save_and_add_another")}</Text>
+            </TouchableOpacity>
+          )}
 
           <TouchableOpacity
             style={[styles.saveButton, loading && { opacity: 0.7 }]}
             onPress={handleSave}
             disabled={loading}
           >
-            <Text style={styles.saveButtonText}>{loading ? "Saving..." : t("save")}</Text>
+            <Text style={styles.saveButtonText}>{loading ? (isEdit ? "Updating..." : "Saving...") : (isEdit ? t("update") || "Update" : t("save"))}</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>

@@ -31,12 +31,17 @@ const addGuest = async (req, res) => {
 // @access  Private
 const getGuests = async (req, res) => {
     try {
-        const wedding = await Wedding.findOne({ user: req.user._id });
-        if (!wedding) {
-            return res.status(404).json({ message: 'Wedding not found' });
+        let weddingId = req.query.weddingId;
+
+        if (!weddingId) {
+            const wedding = await Wedding.findOne({ user: req.user._id });
+            if (!wedding) {
+                return res.status(404).json({ message: 'Wedding not found' });
+            }
+            weddingId = wedding._id;
         }
 
-        const guests = await Guest.find({ wedding: wedding._id });
+        const guests = await Guest.find({ wedding: weddingId });
         res.json(guests);
     } catch (error) {
         res.status(500).json({ message: error.message });

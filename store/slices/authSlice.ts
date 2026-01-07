@@ -186,6 +186,62 @@ export const signInWithFacebook = createAsyncThunk(
     }
 );
 
+export const signInWithApple = createAsyncThunk(
+    'auth/signInWithApple',
+    async (_, { rejectWithValue }) => {
+        try {
+            const result = await authService.signInWithApple();
+            if (result && result.token) {
+                // Call Backend to Exchange Token
+                const backendResponse = await api.post('/auth/apple', {
+                    email: result.user.email,
+                    fullName: result.user.name,
+                    identityToken: result.token
+                });
+
+                const { token, ...userData } = backendResponse.data;
+                await AsyncStorage.setItem('userToken', token);
+                await AsyncStorage.setItem('userInfo', JSON.stringify(userData));
+                return userData;
+            }
+            return rejectWithValue('Apple Sign In failed');
+        } catch (error: any) {
+            if (!error) return rejectWithValue('Cancelled');
+            return rejectWithValue(error.message || 'Apple Sign In failed');
+        }
+    }
+);
+
+export const forgotPassword = createAsyncThunk(
+    'auth/forgotPassword',
+    async ({ email }: { email: string }, { rejectWithValue }) => {
+        try {
+            const response = await api.post('/auth/forgot-password', { email });
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to send reset email');
+        }
+    }
+);
+
+export const resetPassword = createAsyncThunk(
+    'auth/resetPassword',
+    async ({ token, password }: { token: string; password: string }, { rejectWithValue }) => {
+        try {
+            const response = await api.post('/auth/reset-password', { token, password });
+            const { token: userToken, ...userData } = response.data; // Assuming backend returns token on reset success
+            if (userToken) {
+                await AsyncStorage.setItem('userToken', userToken); // Should we auto login? Controller returns token so yes.
+            }
+            // Controller response on success: { success: true, data, token } - Wait, check controller.
+            // Controller checks 'user' and returns token. 
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to reset password');
+        }
+    }
+);
+
 const authSlice = createSlice({
     name: 'auth',
     initialState,
@@ -277,6 +333,19 @@ const authSlice = createSlice({
                 state.isLoading = false;
             })
             .addCase(signInWithFacebook.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
+            // Apple Sign In
+            .addCase(signInWithApple.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(signInWithApple.fulfilled, (state, action) => {
+                state.user = action.payload;
+                state.isLoading = false;
+            })
+            .addCase(signInWithApple.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload as string;
             });

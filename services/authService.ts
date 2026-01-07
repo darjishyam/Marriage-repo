@@ -1,5 +1,5 @@
-// import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import { Platform } from 'react-native';
 
 const WEB_CLIENT_ID = '1062141548138-b076dv3d3c08qk5h137goo3dpb7jhf59.apps.googleusercontent.com';
@@ -93,6 +93,31 @@ class AuthService {
                 throw error;
             }
             return null;
+        }
+    }
+
+    async signInWithApple(): Promise<any> {
+        try {
+            const credential = await AppleAuthentication.signInAsync({
+                requestedScopes: [
+                    AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                    AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                ],
+            });
+
+            return {
+                token: credential.identityToken,
+                user: {
+                    email: credential.email,
+                    name: credential.fullName ? `${credential.fullName.givenName || ''} ${credential.fullName.familyName || ''}`.trim() : null,
+                    id: credential.user
+                }
+            };
+        } catch (e: any) {
+            if (e.code === 'ERR_REQUEST_CANCELED') {
+                return null; // User canceled
+            }
+            throw e;
         }
     }
 

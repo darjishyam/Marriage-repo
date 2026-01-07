@@ -13,18 +13,36 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useExpense } from "@/contexts/ExpenseContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 
 export default function AddExpenseScreen() {
     const router = useRouter();
-    const { addExpense } = useExpense();
+    const params = useLocalSearchParams();
+    const { id } = params;
+    const isEdit = !!id;
+
+    const { addExpense, expenses, updateExpense } = useExpense();
     const { t } = useLanguage();
     const [title, setTitle] = useState("");
     const [amount, setAmount] = useState("");
     const [paidAmount, setPaidAmount] = useState("");
     const [loading, setLoading] = useState(false);
+
+    const [isInitialized, setIsInitialized] = useState(false);
+
+    useEffect(() => {
+        if (isEdit && expenses && !isInitialized) {
+            const expense = expenses.find((e: any) => e._id === id);
+            if (expense) {
+                setTitle(expense.title);
+                setAmount(expense.amount.toString());
+                setPaidAmount(expense.paidAmount ? expense.paidAmount.toString() : "");
+                setIsInitialized(true);
+            }
+        }
+    }, [id, expenses, isInitialized, isEdit]);
 
     // Calculate pending amount
     const total = parseFloat(amount) || 0;
@@ -64,13 +82,23 @@ export default function AddExpenseScreen() {
 
         setLoading(true);
         try {
-            await addExpense(title, numAmount, numPaid, "Other");
-            Toast.show({
-                type: "success",
-                text1: t("success"),
-                text2: t("expense_added_success"),
-            });
-            if (shouldGoBack) {
+            if (isEdit) {
+                await updateExpense(id as string, title, numAmount, numPaid, "Other");
+                Toast.show({
+                    type: "success",
+                    text1: t("success"),
+                    text2: t("expense_updated_success") || "Expense updated successfully",
+                });
+            } else {
+                await addExpense(title, numAmount, numPaid, "Other");
+                Toast.show({
+                    type: "success",
+                    text1: t("success"),
+                    text2: t("expense_added_success"),
+                });
+            }
+
+            if (shouldGoBack || isEdit) {
                 router.replace("/expenses");
             } else {
                 setTitle("");
@@ -98,7 +126,7 @@ export default function AddExpenseScreen() {
                 >
                     <Ionicons name="arrow-back" size={24} color="#000" />
                 </TouchableOpacity>
-                <Text style={styles.navTitle}>{t("add_new_expense")}</Text>
+                <Text style={styles.navTitle}>{isEdit ? t("edit_expense") || "Edit Expense" : t("add_new_expense")}</Text>
                 <View style={styles.placeholder} />
             </View>
 
@@ -164,20 +192,22 @@ export default function AddExpenseScreen() {
 
             {/* Footer Buttons */}
             <View style={styles.footer}>
-                <TouchableOpacity
-                    style={styles.saveMoreButton}
-                    onPress={() => handleSave(false)}
-                    disabled={loading}
-                >
-                    <Text style={styles.saveMoreButtonText}>{t("save_and_add_another")}</Text>
-                </TouchableOpacity>
+                {!isEdit && (
+                    <TouchableOpacity
+                        style={styles.saveMoreButton}
+                        onPress={() => handleSave(false)}
+                        disabled={loading}
+                    >
+                        <Text style={styles.saveMoreButtonText}>{t("save_and_add_another")}</Text>
+                    </TouchableOpacity>
+                )}
 
                 <TouchableOpacity
                     style={styles.saveButton}
                     onPress={() => handleSave(true)}
                     disabled={loading}
                 >
-                    <Text style={styles.saveButtonText}>{loading ? "Saving..." : t("save")}</Text>
+                    <Text style={styles.saveButtonText}>{loading ? (isEdit ? "Updating..." : "Saving...") : (isEdit ? t("update") || "Update" : t("save"))}</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

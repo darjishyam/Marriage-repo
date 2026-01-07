@@ -181,9 +181,11 @@ export default function MyChandlaScreen() {
                       {entry.name}
                     </Text>
                   </View>
-                  <TouchableOpacity>
-                    <Ionicons name="ellipsis-vertical" size={20} color="#000" />
-                  </TouchableOpacity>
+                  <View style={{ flexDirection: 'row', gap: 8 }}>
+                    <TouchableOpacity onPress={() => router.push({ pathname: "/add-shagun", params: { id: entry.id || entry._id } })}>
+                      <Ionicons name="pencil" size={20} color="#000" />
+                    </TouchableOpacity>
+                  </View>
                 </View>
 
                 {/* Stats Grid */}

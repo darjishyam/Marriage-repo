@@ -373,4 +373,141 @@ const facebookLogin = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, verifyOtp, deleteAccount, upgradeToPremium, getMe, googleLogin, facebookLogin };
+// @desc    Login with Apple
+// @route   POST /api/auth/apple
+// @access  Public
+const appleLogin = async (req, res) => {
+    const { email, fullName, identityToken } = req.body;
+
+    try {
+        if (!email) {
+            // Apple might not return email on subsequent logins. 
+            // Ideally we should look up by Apple User ID, but for now matching existing logic.
+            return res.status(400).json({ message: 'Apple account email not found. Please try again or use Mobile Number.' });
+        }
+
+        const user = await User.findOne({ email });
+
+        if (user) {
+            // User exists, log them in
+            return res.json({
+                _id: user.id,
+                name: user.name,
+                email: user.email,
+                mobile: user.mobile,
+                token: generateToken(user.id),
+                isPremium: user.isPremium,
+            });
+        } else {
+            // User does not exist
+            return res.status(404).json({
+                message: 'Account not found. Please Sign Up with Mobile Number first.'
+            });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Forgot Password - Send Reset Link
+// @route   POST /api/auth/forgot-password
+// @access  Public
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User with this email does not exist' });
+        }
+
+        // Generate Token
+        const crypto = require('crypto');
+        const resetToken = crypto.randomBytes(20).toString('hex');
+
+        // Hash and set to resetPasswordToken field
+        user.resetPasswordToken = crypto
+            .createHash('sha256')
+            .update(resetToken)
+            .digest('hex');
+
+        // Set expire (10 minutes)
+        user.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+
+        await user.save();
+
+        // Create reset URL
+        // Deep Link Scheme: helloworld://reset-password?token=...
+        const resetUrl = `helloworld://reset-password?token=${resetToken}`;
+
+        const message = `
+        <p>You requested a password reset.</p>
+        <p>Please click the link below to reset your password:</p>
+        <a href="${resetUrl}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Reset Password</a>
+        <p>If you did not request this, please ignore this email.</p>
+        <p>This link is valid for 10 minutes.</p>
+        `;
+
+        try {
+            await sendEmail({
+                email: user.email,
+                subject: 'Password Reset Request',
+                message,
+            });
+
+            res.status(200).json({ success: true, data: 'Email sent' });
+        } catch (error) {
+            user.resetPasswordToken = undefined;
+            user.resetPasswordExpire = undefined;
+            await user.save();
+            return res.status(500).json({ message: 'Email could not be sent' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Reset Password
+// @route   POST /api/auth/reset-password
+// @access  Public
+const resetPassword = async (req, res) => {
+    const { token, password } = req.body;
+    const crypto = require('crypto');
+
+    // Get hashed token
+    const resetPasswordToken = crypto
+        .createHash('sha256')
+        .update(token)
+        .digest('hex');
+
+    try {
+        const user = await User.findOne({
+            resetPasswordToken,
+            resetPasswordExpire: { $gt: Date.now() },
+        });
+
+        if (!user) {
+            return res.status(400).json({ message: 'Invalid or expired token' });
+        }
+
+        // Set new password
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(password, salt);
+
+        // Clear reset fields
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            data: 'Password updated successfully',
+            token: generateToken(user.id),
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { registerUser, loginUser, verifyOtp, deleteAccount, upgradeToPremium, getMe, googleLogin, facebookLogin, appleLogin, forgotPassword, resetPassword };

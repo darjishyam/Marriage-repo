@@ -93,15 +93,20 @@ export default function InvitationListScreen() {
               <Text style={styles.guestName}>{guest.name}</Text>
               <Text style={styles.guestDetails}>{guest.cityVillage} • {guest.familyCount} Family Members</Text>
             </View>
-            {/* Invite Status Toggle */}
-            <TouchableOpacity
-              style={[styles.inviteStatus, guest.isInvited && styles.inviteStatusSent]}
-              onPress={() => updateGuestStatus(guest._id, !guest.isInvited)}
-            >
-              <Text style={[styles.inviteText, guest.isInvited && styles.inviteTextSent]}>
-                {guest.isInvited ? t("sent") || "Sent" : t("pending") || "Pending"}
-              </Text>
-            </TouchableOpacity>
+            {/* Invite Status Toggle & Edit */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <TouchableOpacity onPress={() => router.push({ pathname: "/add-guest", params: { id: guest._id } })}>
+                <Ionicons name="pencil" size={20} color="#000" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.inviteStatus, guest.isInvited && styles.inviteStatusSent]}
+                onPress={() => updateGuestStatus(guest._id, !guest.isInvited)}
+              >
+                <Text style={[styles.inviteText, guest.isInvited && styles.inviteTextSent]}>
+                  {guest.isInvited ? t("sent") || "Sent" : t("pending") || "Pending"}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         ))}
       </ScrollView>
