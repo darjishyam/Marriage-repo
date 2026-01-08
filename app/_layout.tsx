@@ -3,7 +3,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { Provider } from 'react-redux';
 import { store } from '../store/store';
 
@@ -15,6 +15,20 @@ export default function RootLayout() {
 
   useEffect(() => {
     SplashScreen.hideAsync();
+
+    // Ignore deprecation warnings from libraries
+    if (Platform.OS === 'web') {
+      const originalWarn = console.warn;
+      console.warn = (...args) => {
+        if (
+          args[0]?.includes?.('"shadow*" style props are deprecated') ||
+          args[0]?.includes?.('props.pointerEvents is deprecated')
+        ) {
+          return;
+        }
+        originalWarn(...args);
+      };
+    }
   }, []);
 
   if (!loaded) {
@@ -69,13 +83,22 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: 500, // Constrain width on web
     backgroundColor: "#fff", // Ensure app content has white background
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+      },
+      android: {
+        elevation: 5,
+      },
+      web: {
+        boxShadow: "0px 2px 3.84px rgba(0, 0, 0, 0.25)",
+      },
+    }),
   },
 });

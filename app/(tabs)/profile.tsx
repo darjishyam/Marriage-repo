@@ -26,6 +26,8 @@ export default function ProfileScreen() {
   useEffect(() => {
     if (user?.profileImage) {
       setProfileImage(user.profileImage);
+    } else {
+      setProfileImage(null);
     }
   }, [user]);
 

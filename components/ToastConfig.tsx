@@ -1,5 +1,5 @@
 import { FontAwesome } from '@expo/vector-icons';
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { ToastConfig } from 'react-native-toast-message';
 
 /*
@@ -60,13 +60,20 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 15,
-        // Shadow for iOS
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        // Shadow for Android
-        elevation: 6,
+        ...Platform.select({
+            ios: {
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.1,
+                shadowRadius: 8,
+            },
+            android: {
+                elevation: 6,
+            },
+            web: {
+                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+            },
+        }),
         marginTop: 10,
         borderLeftWidth: 0, // Removed default colored border
     },
